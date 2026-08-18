@@ -117,12 +117,25 @@
               </div>
               <div class="security-note"><b>凭据安全</b><p>拉取私有镜像前会登录 Harbor。密码不写入部署器、运行根或日志；Docker 依照目标机自身的凭据存储策略管理登录态。</p></div>
               <div class="security-note local-only" hidden><b>本机运行根</b><p>本机部署使用部署器管理的运行根。远程 openGauss 凭据由 qcdl 写入此运行根，不保存到部署器历史。</p></div>
+              <label class="failure-toggle" for="simulate-failure">
+                <span><b>故障演示</b><small>在拉取镜像阶段模拟 Harbor 认证失败</small></span>
+                <input id="simulate-failure" type="checkbox" role="switch"><i aria-hidden="true"></i>
+              </label>
             </div>
           </form>
           <div class="deploy-console" id="deploy-console" hidden>
             <div class="console-head"><span>DEPLOYMENT LOG</span><span id="elapsed">00:00</span></div>
             <div class="progress-meta"><b id="current-task">准备部署</b><strong id="progress-value">0%</strong></div>
             <div class="progress"><span id="progress-bar"></span></div>
+            <div class="deploy-error" id="deploy-error" role="alert" hidden>
+              <div class="error-signal" aria-hidden="true">!</div>
+              <div class="error-content">
+                <div class="error-heading"><div><span>DEPLOYMENT INTERRUPTED</span><h3>部署失败</h3></div><code>DEPLOY-IMG-401</code></div>
+                <p>Harbor 身份认证未通过，请检查用户名、密码或机器人令牌后重新部署。</p>
+                <dl><div><dt>失败阶段</dt><dd>拉取镜像</dd></div><div><dt>影响范围</dt><dd>应用与中间件镜像</dd></div></dl>
+                <div class="error-actions"><button class="btn secondary" id="edit-credentials" type="button">修改认证信息</button><button class="btn danger" id="retry-deploy" type="button">重新部署</button></div>
+              </div>
+            </div>
             <pre id="deploy-log" aria-live="polite"></pre>
           </div>
           <div class="actions"><button class="btn secondary" id="back-step1" type="button">← 上一步</button><button class="btn primary" id="start-deploy" type="button">开始部署 <span>→</span></button></div>

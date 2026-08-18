@@ -6,7 +6,8 @@
   const wait = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
   const state = {
     step: 1, targetMode: "ssh", authMode: "password", preflightDone: false,
-    preflightRunning: false, deploying: false, deploymentDone: false,
+    preflightRunning: false, deploying: false, deploymentDone: false, deploymentFailed: false,
+    simulateFailure: false,
     progress: 0, completedAt: null, credentials: null
   };
 
@@ -119,14 +120,29 @@
     const time = new Date().toLocaleTimeString("zh-CN", { hour12: false });
     $("#deploy-log").insertAdjacentHTML("beforeend", `<span class="log-${type}">[${time}] ${sanitize(message)}</span>\n`); $("#deploy-log").scrollTop = $("#deploy-log").scrollHeight;
   }
-  function toggleStepTwoDisabled(disabled) { $$("#step2-form input, #back-step1, #start-deploy").forEach((el) => { el.disabled = disabled; }); }
+  function toggleStepTwoDisabled(disabled) { $$("#step2-form input, #simulate-failure, #back-step1, #start-deploy").forEach((el) => { el.disabled = disabled; }); }
+  function resetDeploymentView() {
+    state.deploymentFailed = false; $("#deploy-error").hidden = true; $("#deploy-console").classList.remove("is-failed");
+    $("#deploy-log").textContent = ""; setText("elapsed", "00:00"); setText("current-task", "准备部署"); setProgress(20); setText("sum-phase", "安装与部署");
+  }
+  function handleDeploymentFailure() {
+    state.deploying = false; state.deploymentFailed = true; setProgress(49); setText("current-task", "部署失败"); setText("sum-phase", "部署失败");
+    log("错误 [DEPLOY-IMG-401]：Harbor 身份认证未通过，镜像拉取已中止", "error");
+    $("#deploy-console").classList.add("is-failed"); $("#deploy-error").hidden = false; showToast("部署已中断，请检查 Harbor 认证信息");
+  }
+  function editCredentials() {
+    toggleStepTwoDisabled(false); $("#deploy-error").hidden = true; $("#deploy-console").classList.remove("is-failed"); setText("sum-phase", "等待重试");
+    $("#harbor-user").focus(); showToast("请修改 Harbor 认证信息后重新部署");
+  }
   async function startDeployment() {
     if (!validateStepTwo() || state.deploying) return;
-    state.deploying = true; $("#deploy-console").hidden = false; toggleStepTwoDisabled(true); $("#deploy-log").textContent = ""; setProgress(20); setText("sum-version", value("bundle-version"));
+    state.deploying = true; state.simulateFailure = $("#simulate-failure").checked; $("#deploy-console").hidden = false; toggleStepTwoDisabled(true); resetDeploymentView(); setText("sum-version", value("bundle-version"));
     const started = Date.now(); const timer = setInterval(() => { const sec = Math.floor((Date.now() - started) / 1000); setText("elapsed", `${String(Math.floor(sec / 60)).padStart(2,"0")}:${String(sec % 60).padStart(2,"0")}`); }, 250);
     log(`部署会话已建立 · ${state.targetMode === "ssh" ? "远程 Linux" : "本机 Docker Desktop"}`); log("敏感凭据已载入内存，不写入部署日志");
     for (let index = 0; index < deployTasks.length; index += 1) {
-      const [task, done] = deployTasks[index]; setText("current-task", task); log(`开始：${task}`); await wait(650); log(`完成：${done}`, "success"); setProgress(20 + Math.round(((index + 1) / deployTasks.length) * 80));
+      const [task, done] = deployTasks[index]; setText("current-task", task); log(`开始：${task}`); await wait(650);
+      if (state.simulateFailure && task === "拉取镜像") { clearInterval(timer); handleDeploymentFailure(); return; }
+      log(`完成：${done}`, "success"); setProgress(20 + Math.round(((index + 1) / deployTasks.length) * 80));
     }
     clearInterval(timer); state.deploying = false; state.deploymentDone = true; state.completedAt = new Date(); state.credentials = generateCredentials(); renderHandoff(); setStep(3); showToast("部署完成，交付清单已生成");
   }
@@ -167,6 +183,7 @@
   $$("#step1-form input").forEach((input) => input.addEventListener("input", () => { updateNodeSummary(); if (state.preflightDone) resetPreflight(); }));
   $$("[data-toggle-password]").forEach((button) => button.addEventListener("click", () => { const input = $("#" + button.dataset.togglePassword), reveal = input.type === "password"; input.type = reveal ? "text" : "password"; button.textContent = reveal ? "隐藏" : "显示"; button.setAttribute("aria-label", reveal ? "隐藏密码" : "显示密码"); }));
   $("#check-env").addEventListener("click", runPreflight); $("#to-step2").addEventListener("click", () => setStep(2)); $("#back-step1").addEventListener("click", () => setStep(1)); $("#start-deploy").addEventListener("click", startDeployment);
+  $("#edit-credentials").addEventListener("click", editCredentials); $("#retry-deploy").addEventListener("click", startDeployment);
   $$('[data-step-nav]').forEach((button) => button.addEventListener("click", () => { if (!button.disabled && Number(button.dataset.stepNav) <= state.step) setStep(Number(button.dataset.stepNav)); }));
   $("#handoff-sections").addEventListener("click", (event) => {
     const reveal = event.target.closest("[data-reveal]"), copy = event.target.closest("[data-copy]");
