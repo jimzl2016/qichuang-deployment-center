@@ -4,6 +4,19 @@
   const $ = (selector, root = document) => root.querySelector(selector);
   const $$ = (selector, root = document) => [...root.querySelectorAll(selector)];
   const wait = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+  const themeModes = new Set(["dark", "light", "system"]);
+  function readThemeMode() { try { const stored = localStorage.getItem("qcdl-theme"); return themeModes.has(stored) ? stored : "system"; } catch { return "system"; } }
+  function applyTheme(mode, persist = true) {
+    const effective = mode === "system" ? (window.matchMedia("(prefers-color-scheme: light)").matches ? "light" : "dark") : mode;
+    document.documentElement.dataset.theme = effective; document.documentElement.dataset.themeMode = mode;
+    $$('[data-theme-choice]').forEach((button) => button.setAttribute("aria-pressed", String(button.dataset.themeChoice === mode)));
+    if (persist) { try { localStorage.setItem("qcdl-theme", mode); } catch { /* Theme preference is optional. */ } }
+  }
+  function initTheme() {
+    applyTheme(readThemeMode(), false);
+    $$('[data-theme-choice]').forEach((button) => button.addEventListener("click", () => applyTheme(button.dataset.themeChoice)));
+    window.matchMedia("(prefers-color-scheme: light)").addEventListener("change", () => { if (document.documentElement.dataset.themeMode === "system") applyTheme("system", false); });
+  }
   const state = {
     step: 1, targetMode: "ssh", authMode: "password", preflightDone: false,
     preflightRunning: false, deploying: false, deploymentDone: false, deploymentFailed: false,
@@ -194,5 +207,5 @@
   $("#download-checklist").addEventListener("click", () => $("#download-dialog").showModal()); $("#cancel-download").addEventListener("click", () => $("#download-dialog").close()); $("#confirm-download").addEventListener("click", () => { $("#download-dialog").close(); downloadChecklist(); });
   $("#login-system").addEventListener("click", () => { const group = state.credentials.groups.find((item) => item.title === "后台系统"), url = group.fields.find((item) => item[0] === "访问地址")[1]; try { const parsed = new URL(url); window.open(parsed.href, "_blank", "noopener,noreferrer"); } catch { showToast("后台系统地址无效"); } });
 
-  renderTargetMode(); renderAuthMode(); renderStepper(); setProgress(0);
+  initTheme(); renderTargetMode(); renderAuthMode(); renderStepper(); setProgress(0);
 })();

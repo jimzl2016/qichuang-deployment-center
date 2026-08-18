@@ -18,15 +18,15 @@
 - Modify: `app.js`
 - Modify: `tests/smoke.mjs`
 
-- [ ] **Step 1: 扩展冒烟测试并验证失败**
+- [x] **Step 1: 扩展冒烟测试并验证失败**
 
 在冒烟测试中加入“暗色”“亮色”“跟随系统”三个静态文本断言；运行 `node tests/smoke.mjs`，预期在控件添加前失败。
 
-- [ ] **Step 2: 添加可访问主题控件**
+- [x] **Step 2: 添加可访问主题控件**
 
 在顶部状态区域加入 `role="group"` 的三段按钮，使用 `aria-pressed` 表示当前主题，不改变现有部署步骤结构。
 
-- [ ] **Step 3: 添加亮色令牌和系统模式规则**
+- [x] **Step 3: 添加亮色令牌和系统模式规则**
 
 在 CSS 中增加 `[data-theme="light"]` 令牌覆盖以及 `@media (prefers-color-scheme: light)` 的 system 覆盖。亮色保持橙色主按钮白字，并确保输入、错误面板、摘要和日志具有足够对比度。
 
@@ -35,20 +35,20 @@
 **Files:**
 - Modify: `app.js`
 
-- [ ] **Step 1: 实现主题初始化与切换**
+- [x] **Step 1: 实现主题初始化与切换**
 
 读取 `localStorage` 中的 `qcdl-theme`，无值时使用 `system`；切换时更新 `document.documentElement.dataset.theme`、按钮 `aria-pressed` 和本地偏好。无效值回退为 `system`。
 
-- [ ] **Step 2: 运行静态检查**
+- [x] **Step 2: 运行静态检查**
 
 Run: `node --check app.js && node tests/smoke.mjs`
 Expected: 两个命令退出码为 `0`，并输出 `Smoke checks passed.`。
 
-- [ ] **Step 3: 浏览器验证三种模式**
+- [x] **Step 3: 浏览器验证三种模式**
 
 验证按钮即时切换、刷新后偏好保留、跟随系统模式使用媒体查询；检查部署表单不会被主题偏好写入或恢复。
 
-- [ ] **Step 4: 提交并推送**
+- [x] **Step 4: 提交并推送**
 
 Run: `git add index.html styles.css app.js tests/smoke.mjs docs/superpowers/specs/2026-08-17-qichuang-deployment-center-design.md docs/superpowers/plans/2026-08-18-theme-modes.md && git commit -m "feat: add theme mode switcher" && git push origin master`
 Expected: GitHub Pages 构建完成后公网版本出现主题控件。
