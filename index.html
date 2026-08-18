@@ -3,179 +3,125 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="color-scheme" content="dark">
-  <title>启创动力 - 部署中心</title>
+  <meta name="color-scheme" content="light">
+  <title>运营管理系统安装</title>
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-  <header class="topbar">
-    <a class="brand" href="#" aria-label="启创动力部署中心">
-      <span class="logo-wrap"><img src="assets/logo.png" alt="启创动力"></span>
-      <span><strong>启创动力</strong><small>部署中心 / DEPLOYMENT CENTER</small></span>
-    </a>
-    <div class="top-actions">
-      <div class="top-status"><span class="status-dot"></span><span>部署器就绪</span><code>v2.8.0</code></div>
-      <div class="theme-switcher" role="group" aria-label="主题模式">
-        <button type="button" data-theme-choice="dark" aria-pressed="false">暗色</button>
-        <button type="button" data-theme-choice="light" aria-pressed="false">亮色</button>
-      </div>
-    </div>
-  </header>
-
-  <div class="shell">
-    <nav class="stepper" aria-label="部署进度">
-      <button class="step is-active" type="button" data-step-nav="1" aria-current="step">
-        <span class="step-no">01</span><span><b>部署目标</b><small>连接与环境预检</small></span>
-      </button>
-      <span class="step-line" aria-hidden="true"></span>
-      <button class="step" type="button" data-step-nav="2" disabled>
-        <span class="step-no">02</span><span><b>安装方式与部署</b><small>运行材料与镜像</small></span>
-      </button>
-      <span class="step-line" aria-hidden="true"></span>
-      <button class="step" type="button" data-step-nav="3" disabled>
-        <span class="step-no">03</span><span><b>部署完成</b><small>交付清单</small></span>
-      </button>
-    </nav>
-
-    <main class="workspace">
-      <div class="task-column">
-        <section class="step-view is-visible" id="step-1" aria-labelledby="step1-title">
-          <div class="section-head">
-            <div><span class="eyebrow">STEP 01 / TARGET</span><h1 id="step1-title">选择部署目标</h1><p>连接目标环境并完成部署前置检查。</p></div>
-            <span class="phase-tag">连接配置</span>
-          </div>
-
-          <div class="segment" role="radiogroup" aria-label="部署目标">
-            <label><input type="radio" name="target-mode" value="ssh" checked><span><b>远程 SSH</b><small>通过 SSH 部署到 Linux</small></span></label>
-            <label><input type="radio" name="target-mode" value="local"><span><b>本机部署</b><small>使用本机 Docker Desktop</small></span></label>
-          </div>
-
-          <form id="step1-form" novalidate>
-            <div class="form-block" id="ssh-fields">
-              <div class="block-title"><h2>远程 SSH</h2><span>LINUX HOST</span></div>
-              <div class="form-grid">
-                <div class="field"><label for="target-name">目标名称</label><input id="target-name" name="targetName" placeholder="例：生产环境-A区" autocomplete="off"><small class="error" data-error-for="target-name"></small></div>
-                <div class="field"><label for="server-host">服务器地址</label><input id="server-host" name="serverHost" placeholder="192.168.10.21" spellcheck="false"><small class="error" data-error-for="server-host"></small></div>
-                <div class="field compact"><label for="ssh-port">SSH 端口</label><input id="ssh-port" name="sshPort" type="number" min="1" max="65535" value="22"><small class="error" data-error-for="ssh-port"></small></div>
-                <div class="field"><label for="ssh-user">登录用户</label><input id="ssh-user" name="sshUser" placeholder="root" autocomplete="username"><small class="error" data-error-for="ssh-user"></small></div>
-              </div>
-              <fieldset class="auth-fieldset"><legend>连接认证</legend>
-                <div class="inline-radios">
-                  <label><input type="radio" name="auth-mode" value="password" checked> 密码</label>
-                  <label><input type="radio" name="auth-mode" value="key"> 私钥文件</label>
-                </div>
-                <div class="auth-panel" id="password-auth">
-                  <div class="field"><label for="ssh-password">SSH 密码</label><div class="password-input"><input id="ssh-password" name="sshPassword" type="password" autocomplete="current-password"><button type="button" class="icon-btn" data-toggle-password="ssh-password" aria-label="显示密码">显示</button></div><small class="error" data-error-for="ssh-password"></small></div>
-                </div>
-                <div class="auth-panel" id="key-auth" hidden>
-                  <div class="form-grid">
-                    <div class="field"><label for="key-path">私钥路径</label><input id="key-path" name="keyPath" placeholder="/home/user/.ssh/id_ed25519"><small class="error" data-error-for="key-path"></small></div>
-                    <div class="field"><label for="key-passphrase">私钥口令 <span class="optional">选填</span></label><div class="password-input"><input id="key-passphrase" name="keyPassphrase" type="password"><button type="button" class="icon-btn" data-toggle-password="key-passphrase" aria-label="显示口令">显示</button></div></div>
-                  </div>
-                </div>
-              </fieldset>
-            </div>
-
-            <div class="form-block" id="local-fields" hidden>
-              <div class="block-title"><h2>本机 Docker 部署</h2><span>DOCKER DESKTOP</span></div>
-              <div class="notice"><b>本机运行模式</b><p>Windows / macOS 将在 Docker Desktop 启动服务与中间件，并连接独享的远程 openGauss。</p></div>
-              <div class="form-grid">
-                <div class="field"><label for="db-owner">数据库 Owner</label><input id="db-owner" name="dbOwner" placeholder="qcdl_owner"><small class="error" data-error-for="db-owner"></small></div>
-                <div class="field"><label for="og-host">远程 openGauss 地址</label><input id="og-host" name="ogHost" placeholder="opengauss.internal"><small class="error" data-error-for="og-host"></small></div>
-                <div class="field compact"><label for="og-port">openGauss 端口</label><input id="og-port" name="ogPort" type="number" min="1" max="65535" value="5432"><small class="error" data-error-for="og-port"></small></div>
-                <div class="field"><label for="ops-user">运维用户名</label><input id="ops-user" name="opsUser" placeholder="qcdl_ops" autocomplete="username"><small class="error" data-error-for="ops-user"></small></div>
-                <div class="field"><label for="ops-password">运维密码</label><div class="password-input"><input id="ops-password" name="opsPassword" type="password" autocomplete="current-password"><button type="button" class="icon-btn" data-toggle-password="ops-password" aria-label="显示密码">显示</button></div><small class="error" data-error-for="ops-password"></small></div>
-              </div>
-            </div>
-          </form>
-
-          <div class="preflight-wrap">
-            <div class="block-title"><h2>环境预检</h2><span id="preflight-label">等待连接</span></div>
-            <p class="helper">完成连接后检查 Docker、架构、磁盘和权限。</p>
-            <div class="checks" id="preflight-checks">
-              <div class="check" data-check="docker"><span class="check-icon">·</span><span><b>Docker</b><small>等待检查运行状态</small></span><em>待检查</em></div>
-              <div class="check" data-check="arch"><span class="check-icon">·</span><span><b>架构</b><small>等待识别目标架构</small></span><em>待检查</em></div>
-              <div class="check" data-check="disk"><span class="check-icon">·</span><span><b>磁盘</b><small>最低可用空间 80 GB</small></span><em>待检查</em></div>
-              <div class="check" data-check="permission"><span class="check-icon">·</span><span><b>权限</b><small>等待检查部署权限</small></span><em>待检查</em></div>
-            </div>
-          </div>
-
-          <div class="actions"><button class="btn secondary" id="check-env" type="button">检查环境</button><button class="btn primary" id="to-step2" type="button" disabled>下一步 <span>→</span></button></div>
-        </section>
-
-        <section class="step-view" id="step-2" aria-labelledby="step2-title" hidden>
-          <div class="section-head"><div><span class="eyebrow">STEP 02 / DEPLOY</span><h1 id="step2-title">安装方式与部署</h1><p>从云效 Runtime Bundle 获取运行材料和依赖镜像。</p></div><span class="phase-tag">在线部署</span></div>
-          <div class="network-banner"><span>NET</span><div><b>请确保网络连接正常</b><p>部署器需要访问云效 Generic 制品仓库与 Harbor 私有镜像仓。</p></div></div>
-          <form id="step2-form" novalidate>
-            <div class="form-block">
-              <div class="block-title"><h2>Runtime Bundle</h2><span>ALIYUN DEVOPS</span></div>
-              <div class="form-grid">
-                <div class="field"><label for="bundle-version">Runtime Bundle 版本</label><input id="bundle-version" name="bundleVersion" value="最新版本"><small class="error" data-error-for="bundle-version"></small></div>
-                <div class="field"><label for="generic-user">云效 Generic 用户名</label><input id="generic-user" name="genericUser" placeholder="generic-user" autocomplete="username"><small class="error" data-error-for="generic-user"></small></div>
-                <div class="field full"><label for="generic-token">云效 Generic 密码或令牌</label><div class="password-input"><input id="generic-token" name="genericToken" type="password" autocomplete="new-password"><button type="button" class="icon-btn" data-toggle-password="generic-token">显示</button></div><small class="error" data-error-for="generic-token"></small></div>
-              </div>
-            </div>
-            <div class="form-block">
-              <div class="block-title"><h2>Harbor 镜像仓认证</h2><span>PRIVATE REGISTRY</span></div>
-              <div class="form-grid">
-                <div class="field"><label for="harbor-user">Harbor 用户名</label><input id="harbor-user" name="harborUser" placeholder="robot$qcdl-deployer" autocomplete="username"><small class="error" data-error-for="harbor-user"></small></div>
-                <div class="field"><label for="harbor-token">Harbor 密码或机器人令牌</label><div class="password-input"><input id="harbor-token" name="harborToken" type="password" autocomplete="new-password"><button type="button" class="icon-btn" data-toggle-password="harbor-token">显示</button></div><small class="error" data-error-for="harbor-token"></small></div>
-              </div>
-              <div class="security-note"><b>凭据安全</b><p>拉取私有镜像前会登录 Harbor。密码不写入部署器、运行根或日志；Docker 依照目标机自身的凭据存储策略管理登录态。</p></div>
-              <div class="security-note local-only" hidden><b>本机运行根</b><p>本机部署使用部署器管理的运行根。远程 openGauss 凭据由 qcdl 写入此运行根，不保存到部署器历史。</p></div>
-              <label class="failure-toggle" for="simulate-failure">
-                <span><b>故障演示</b><small>在拉取镜像阶段模拟 Harbor 认证失败</small></span>
-                <input id="simulate-failure" type="checkbox" role="switch"><i aria-hidden="true"></i>
-              </label>
-            </div>
-          </form>
-          <div class="deploy-console" id="deploy-console" hidden>
-            <div class="console-head"><span>DEPLOYMENT LOG</span><span id="elapsed">00:00</span></div>
-            <div class="progress-meta"><b id="current-task">准备部署</b><strong id="progress-value">0%</strong></div>
-            <div class="progress"><span id="progress-bar"></span></div>
-            <div class="deploy-error" id="deploy-error" role="alert" hidden>
-              <div class="error-signal" aria-hidden="true">!</div>
-              <div class="error-content">
-                <div class="error-heading"><div><span>DEPLOYMENT INTERRUPTED</span><h3>部署失败</h3></div><code>DEPLOY-IMG-401</code></div>
-                <p>Harbor 身份认证未通过，请检查用户名、密码或机器人令牌后重新部署。</p>
-                <dl><div><dt>失败阶段</dt><dd>拉取镜像</dd></div><div><dt>影响范围</dt><dd>应用与中间件镜像</dd></div></dl>
-                <div class="error-actions"><button class="btn secondary" id="edit-credentials" type="button">修改认证信息</button><button class="btn danger" id="retry-deploy" type="button">重新部署</button></div>
-              </div>
-            </div>
-            <pre id="deploy-log" aria-live="polite"></pre>
-          </div>
-          <div class="actions"><button class="btn secondary" id="back-step1" type="button">← 上一步</button><button class="btn primary" id="start-deploy" type="button">开始部署 <span>→</span></button></div>
-        </section>
-
-        <section class="step-view" id="step-3" aria-labelledby="step3-title" hidden>
-          <div class="success-hero"><span class="success-mark">✓</span><div><span class="eyebrow">DEPLOYMENT COMPLETE</span><h1 id="step3-title">部署完成</h1><p>所有服务已启动并通过健康检查。</p></div><span class="complete-time" id="complete-time"></span></div>
-          <div class="handoff-head"><div><h2>部署交付清单</h2><p>以下信息包含系统访问凭据，请保存在受控位置。</p></div><button type="button" class="btn ghost" id="copy-all">复制完整清单</button></div>
-          <div id="handoff-sections" class="handoff-sections"></div>
-          <div class="sensitive-warning"><b>敏感信息</b><p>下载文件包含明文密码、令牌与密钥。请通过安全渠道交付，并在交付完成后妥善归档。</p></div>
-          <div class="actions final-actions"><button class="btn secondary" id="download-checklist" type="button">下载交付清单</button><button class="btn primary" id="login-system" type="button">登录系统 <span>↗</span></button></div>
-        </section>
-      </div>
-
-      <aside class="summary" aria-label="本次部署摘要">
-        <div class="summary-head"><span>SESSION</span><span class="live-dot">LIVE</span></div>
-        <h2>本次部署</h2>
-        <dl>
-          <div><dt>部署目标</dt><dd id="sum-target">远程 SSH</dd></div>
-          <div><dt>目标节点</dt><dd id="sum-node">尚未配置</dd></div>
-          <div><dt>Runtime</dt><dd id="sum-version">最新版本</dd></div>
-          <div><dt>当前阶段</dt><dd id="sum-phase">连接配置</dd></div>
-        </dl>
-        <div class="summary-progress"><span><b>总体进度</b><strong id="sum-progress">0%</strong></span><div><i id="sum-progress-bar"></i></div></div>
-        <div class="summary-foot"><span class="shield">◆</span><p><b>本地会话</b><br>敏感信息不会保存到浏览器历史。</p></div>
+  <div class="stage">
+    <div class="installer" data-installer-size="720x540">
+      <aside class="sidebar">
+        <div class="brand">
+          <span class="brand-mark"><img src="assets/logo.png" alt="启创动力"></span>
+          <span><strong>启创动力</strong><small>运营管理系统</small></span>
+        </div>
+        <nav class="steps" aria-label="安装步骤">
+          <span class="step-rail" aria-hidden="true"></span>
+          <button class="step is-active" type="button" data-step-nav="1" aria-current="step"><b>1</b><span>部署目标</span></button>
+          <button class="step" type="button" data-step-nav="2" disabled><b>2</b><span>安装与部署</span></button>
+          <button class="step" type="button" data-step-nav="3" disabled><b>3</b><span>完成安装</span></button>
+        </nav>
+        <div class="sidebar-foot"><span class="ready-dot"></span>安装器已就绪<code>v2.8.0</code></div>
       </aside>
-    </main>
+
+      <main class="main-pane">
+        <section class="screen is-visible" id="step-1" aria-labelledby="step1-title">
+          <header class="screen-head"><span>STEP 1 / 3</span><h1 id="step1-title">部署目标与环境检测</h1><p>通过 SSH 部署到 Linux，或使用本机 Docker 环境部署</p></header>
+          <div class="screen-body">
+            <div class="tabs" role="tablist" aria-label="部署目标">
+              <button role="tab" aria-selected="true" aria-controls="tab-ssh" data-step-tab="1:ssh">远程 SSH</button>
+              <button role="tab" aria-selected="false" aria-controls="tab-local" data-step-tab="1:local">本机部署</button>
+            </div>
+            <form id="step1-form" novalidate>
+              <div class="tab-panel" id="tab-ssh" role="tabpanel">
+                <div class="form-grid compact-grid">
+                  <div class="field"><label for="target-name">目标名称</label><input id="target-name" placeholder="生产环境-A区"><small class="error" data-error-for="target-name"></small></div>
+                  <div class="field"><label for="server-host">服务器地址</label><input id="server-host" placeholder="192.168.10.21"><small class="error" data-error-for="server-host"></small></div>
+                  <div class="field"><label for="ssh-port">SSH 端口</label><input id="ssh-port" type="number" min="1" max="65535" value="22"><small class="error" data-error-for="ssh-port"></small></div>
+                  <div class="field"><label for="ssh-user">登录用户</label><input id="ssh-user" placeholder="root" autocomplete="username"><small class="error" data-error-for="ssh-user"></small></div>
+                </div>
+                <div class="auth-row"><span>连接认证</span><label><input type="radio" name="auth-mode" value="password" checked> 密码</label><label><input type="radio" name="auth-mode" value="key"> 私钥文件</label></div>
+                <div class="auth-box" id="password-auth"><div class="field"><label for="ssh-password">SSH 密码</label><div class="password-input"><input id="ssh-password" type="password"><button type="button" data-toggle-password="ssh-password">显示</button></div><small class="error" data-error-for="ssh-password"></small></div></div>
+                <div class="auth-box key-box" id="key-auth" hidden><div class="form-grid"><div class="field"><label for="key-path">私钥路径</label><input id="key-path" placeholder="/home/user/.ssh/id_ed25519"><small class="error" data-error-for="key-path"></small></div><div class="field"><label for="key-passphrase">私钥口令 <em>选填</em></label><div class="password-input"><input id="key-passphrase" type="password"><button type="button" data-toggle-password="key-passphrase">显示</button></div></div></div></div>
+              </div>
+              <div class="tab-panel" id="tab-local" role="tabpanel" hidden>
+                <div class="info-strip">Docker Desktop 将在本机启动服务，并连接独享的远程 openGauss。</div>
+                <div class="form-grid local-grid">
+                  <div class="field"><label for="db-owner">数据库 Owner</label><input id="db-owner" placeholder="qcdl_owner"><small class="error" data-error-for="db-owner"></small></div>
+                  <div class="field"><label for="og-host">远程 openGauss 地址</label><input id="og-host" placeholder="opengauss.internal"><small class="error" data-error-for="og-host"></small></div>
+                  <div class="field"><label for="og-port">openGauss 端口</label><input id="og-port" type="number" min="1" max="65535" value="5432"><small class="error" data-error-for="og-port"></small></div>
+                  <div class="field"><label for="ops-user">运维用户名</label><input id="ops-user" placeholder="qcdl_ops"><small class="error" data-error-for="ops-user"></small></div>
+                  <div class="field field-span"><label for="ops-password">运维密码</label><div class="password-input"><input id="ops-password" type="password"><button type="button" data-toggle-password="ops-password">显示</button></div><small class="error" data-error-for="ops-password"></small></div>
+                </div>
+              </div>
+            </form>
+            <div class="preflight" id="preflight-checks" aria-label="环境预检结果">
+              <div class="check" data-check="docker"><i>·</i><span><b>Docker</b><small>待检查</small></span></div>
+              <div class="check" data-check="arch"><i>·</i><span><b>架构</b><small>待检查</small></span></div>
+              <div class="check" data-check="disk"><i>·</i><span><b>磁盘</b><small>待检查</small></span></div>
+              <div class="check" data-check="permission"><i>·</i><span><b>权限</b><small>待检查</small></span></div>
+            </div>
+          </div>
+          <footer class="screen-actions"><span class="action-status" id="preflight-label">等待环境检查</span><button class="btn secondary" id="check-env" type="button">检查环境</button><button class="btn primary" id="to-step2" type="button" disabled>下一步</button></footer>
+        </section>
+
+        <section class="screen" id="step-2" aria-labelledby="step2-title" hidden>
+          <header class="screen-head"><span>STEP 2 / 3</span><h1 id="step2-title">安装与部署</h1><p>获取运行材料、配置镜像仓库并启动服务</p></header>
+          <div class="screen-body">
+            <div class="tabs" role="tablist" aria-label="安装配置">
+              <button role="tab" aria-selected="true" aria-controls="tab-runtime" data-step-tab="2:runtime">运行材料</button>
+              <button role="tab" aria-selected="false" aria-controls="tab-harbor" data-step-tab="2:harbor">镜像仓库</button>
+              <button role="tab" aria-selected="false" aria-controls="tab-progress" data-step-tab="2:progress">部署进度</button>
+            </div>
+            <form id="step2-form" novalidate>
+              <div class="tab-panel" id="tab-runtime" role="tabpanel">
+                <div class="info-strip"><b>网络要求</b>　请确保可访问云效 Generic 制品仓库。</div>
+                <div class="form-grid runtime-grid">
+                  <div class="field field-span"><label for="bundle-version">Runtime Bundle 版本</label><input id="bundle-version" value="最新版本"><small class="error" data-error-for="bundle-version"></small></div>
+                  <div class="field"><label for="generic-user">云效 Generic 用户名</label><input id="generic-user" placeholder="generic-user"><small class="error" data-error-for="generic-user"></small></div>
+                  <div class="field"><label for="generic-token">云效密码或令牌</label><div class="password-input"><input id="generic-token" type="password"><button type="button" data-toggle-password="generic-token">显示</button></div><small class="error" data-error-for="generic-token"></small></div>
+                </div>
+              </div>
+              <div class="tab-panel" id="tab-harbor" role="tabpanel" hidden>
+                <div class="form-grid harbor-grid">
+                  <div class="field"><label for="harbor-user">Harbor 用户名</label><input id="harbor-user" placeholder="robot$qcdl"><small class="error" data-error-for="harbor-user"></small></div>
+                  <div class="field"><label for="harbor-token">Harbor 密码或机器人令牌</label><div class="password-input"><input id="harbor-token" type="password"><button type="button" data-toggle-password="harbor-token">显示</button></div><small class="error" data-error-for="harbor-token"></small></div>
+                </div>
+                <div class="security-box"><b>凭据安全</b><p>密码不写入部署器、运行根或日志，由 Docker 管理登录态。</p></div>
+                <div class="security-box local-only" hidden><b>本机运行根</b><p>openGauss 凭据由 qcdl 写入运行根，不保存到部署器历史。</p></div>
+                <label class="failure-toggle" for="simulate-failure"><span><b>故障演示</b><small>模拟 Harbor 认证失败</small></span><input id="simulate-failure" type="checkbox" role="switch"><i></i></label>
+              </div>
+            </form>
+            <div class="tab-panel progress-panel" id="tab-progress" role="tabpanel" hidden>
+              <div class="progress-top"><span><b id="current-task">等待开始部署</b><small id="elapsed">00:00</small></span><strong id="progress-value">0%</strong></div>
+              <div class="progress"><i id="progress-bar"></i></div>
+              <div class="deploy-error" id="deploy-error" role="alert" hidden><div><b>部署失败</b><code>DEPLOY-IMG-401</code></div><p>Harbor 身份认证未通过，请检查用户名或机器人令牌。</p><span>失败阶段：拉取镜像</span><div><button class="btn secondary" id="edit-credentials" type="button">修改认证信息</button><button class="btn danger" id="retry-deploy" type="button">重新部署</button></div></div>
+              <pre id="deploy-log" aria-live="polite"></pre>
+            </div>
+          </div>
+          <footer class="screen-actions"><span class="action-status">材料与凭据仅用于当前会话</span><button class="btn secondary" id="back-step1" type="button">上一步</button><button class="btn primary" id="start-deploy" type="button">开始部署</button></footer>
+        </section>
+
+        <section class="screen" id="step-3" aria-labelledby="step3-title" hidden>
+          <header class="screen-head complete-head"><span>STEP 3 / 3　·　安装成功</span><h1 id="step3-title">运营管理系统安装完成</h1><p id="complete-time">所有服务已启动并通过健康检查</p></header>
+          <div class="screen-body">
+            <div class="tabs" role="tablist" aria-label="部署交付清单">
+              <button role="tab" aria-selected="true" aria-controls="tab-deployment" data-step-tab="3:deployment">部署信息</button>
+              <button role="tab" aria-selected="false" aria-controls="tab-data" data-step-tab="3:data">数据服务</button>
+              <button role="tab" aria-selected="false" aria-controls="tab-services" data-step-tab="3:services">文件与后台</button>
+            </div>
+            <div class="tab-panel handoff-panel" id="tab-deployment" role="tabpanel"></div>
+            <div class="tab-panel handoff-panel" id="tab-data" role="tabpanel" hidden></div>
+            <div class="tab-panel handoff-panel" id="tab-services" role="tabpanel" hidden></div>
+          </div>
+          <footer class="screen-actions final-actions"><button class="btn link-btn" id="copy-all" type="button">复制完整清单</button><button class="btn secondary" id="download-checklist" type="button">下载交付清单</button><button class="btn primary" id="login-system" type="button">登录系统</button></footer>
+        </section>
+      </main>
+    </div>
   </div>
 
   <div class="toast" id="toast" role="status" aria-live="polite"></div>
-  <dialog id="download-dialog">
-    <div class="dialog-mark">!</div><h2>下载敏感交付信息？</h2><p>文件将包含明文密码、令牌和密钥。请确认下载后保存在受控位置。</p>
-    <div class="dialog-actions"><button class="btn secondary" id="cancel-download" type="button">取消</button><button class="btn primary" id="confirm-download" type="button">确认下载</button></div>
-  </dialog>
+  <dialog id="download-dialog"><div class="dialog-mark">!</div><h2>下载敏感交付信息？</h2><p>文件包含明文密码、令牌和密钥，请保存在受控位置。</p><div><button class="btn secondary" id="cancel-download" type="button">取消</button><button class="btn primary" id="confirm-download" type="button">确认下载</button></div></dialog>
   <script src="app.js"></script>
 </body>
 </html>
