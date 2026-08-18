@@ -99,11 +99,12 @@
   function renderStepper() {
     $$('[data-step-nav]').forEach((button) => {
       const step = Number(button.dataset.stepNav); button.classList.toggle("is-active", step === state.step); button.classList.toggle("is-complete", step < state.step || (step === 3 && state.deploymentDone));
-      button.disabled = step > state.step || (step === 2 && !state.preflightDone) || (step === 3 && !state.deploymentDone);
+      button.disabled = state.deploymentDone || step > state.step || (step === 2 && !state.preflightDone) || (step === 3 && !state.deploymentDone);
       if (step === state.step) button.setAttribute("aria-current", "step"); else button.removeAttribute("aria-current");
     });
   }
   function setStep(step) {
+    if (state.deploymentDone && step !== 3) return;
     state.step = step;
     $$(".step-view").forEach((view) => { const visible = view.id === `step-${step}`; view.hidden = !visible; view.classList.toggle("is-visible", visible); });
     const phases = ["", "连接配置", "安装与部署", "部署完成"]; setText("sum-phase", phases[step]);
