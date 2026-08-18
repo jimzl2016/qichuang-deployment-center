@@ -4,18 +4,17 @@
   const $ = (selector, root = document) => root.querySelector(selector);
   const $$ = (selector, root = document) => [...root.querySelectorAll(selector)];
   const wait = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
-  const themeModes = new Set(["dark", "light", "system"]);
-  function readThemeMode() { try { const stored = localStorage.getItem("qcdl-theme"); return themeModes.has(stored) ? stored : "system"; } catch { return "system"; } }
+  const themeModes = new Set(["dark", "light"]);
+  function readThemeMode() { try { const stored = localStorage.getItem("qcdl-theme"); return themeModes.has(stored) ? stored : "dark"; } catch { return "dark"; } }
   function applyTheme(mode, persist = true) {
-    const effective = mode === "system" ? (window.matchMedia("(prefers-color-scheme: light)").matches ? "light" : "dark") : mode;
-    document.documentElement.dataset.theme = effective; document.documentElement.dataset.themeMode = mode;
-    $$('[data-theme-choice]').forEach((button) => button.setAttribute("aria-pressed", String(button.dataset.themeChoice === mode)));
-    if (persist) { try { localStorage.setItem("qcdl-theme", mode); } catch { /* Theme preference is optional. */ } }
+    const normalized = themeModes.has(mode) ? mode : "dark";
+    document.documentElement.dataset.theme = normalized; document.documentElement.dataset.themeMode = normalized;
+    $$('[data-theme-choice]').forEach((button) => button.setAttribute("aria-pressed", String(button.dataset.themeChoice === normalized)));
+    if (persist) { try { localStorage.setItem("qcdl-theme", normalized); } catch { /* Theme preference is optional. */ } }
   }
   function initTheme() {
     applyTheme(readThemeMode(), false);
     $$('[data-theme-choice]').forEach((button) => button.addEventListener("click", () => applyTheme(button.dataset.themeChoice)));
-    window.matchMedia("(prefers-color-scheme: light)").addEventListener("change", () => { if (document.documentElement.dataset.themeMode === "system") applyTheme("system", false); });
   }
   const state = {
     step: 1, targetMode: "ssh", authMode: "password", preflightDone: false,
