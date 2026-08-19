@@ -17,7 +17,9 @@ for (const text of [
 assert.match(html, /class="installer"[^>]+data-installer-size="720x540"/);
 assert.ok(html.includes("/qcdl/jar-project"));
 assert.ok(html.includes("C:\\Users\\87188\\AppData\\Local\\Programs\\OMS"));
-assert.ok(html.includes("id=\"local-db-opengauss\"") && html.includes("disabled"), "Local openGauss must be disabled");
+assert.ok(html.includes("id=\"ssh-db\"") && html.includes("id=\"local-db\""), "Database controls must be selects");
+assert.ok(html.includes("openGauss（暂不支持）") && html.includes("<option value=\"opengauss\" disabled>"), "Local openGauss must be disabled");
+assert.ok(!html.includes("C1 远程 SSH") && !html.includes("C2 本机部署"), "C1/C2 prefixes should not be displayed");
 assert.ok(!html.includes("暗色") && !html.includes("亮色") && !html.includes("跟随系统"), "Theme switcher should not be displayed");
 assert.match(styles, /\.installer\{[^}]*width:720px;height:540px/);
 assert.match(styles, /grid-template-columns:180px 540px/);

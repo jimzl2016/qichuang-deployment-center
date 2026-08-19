@@ -119,7 +119,7 @@
   function randomString(length, alphabet = "ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz23456789") { return Array.from({ length }, () => alphabet[Math.floor(Math.random() * alphabet.length)]).join(""); }
   function formatDate(date) { return new Intl.DateTimeFormat("zh-CN", { year:"numeric", month:"2-digit", day:"2-digit", hour:"2-digit", minute:"2-digit", second:"2-digit", hour12:false }).format(date).replaceAll("/", "-"); }
   function generateCredentials() {
-    const ssh = state.targetMode === "ssh", host = ssh ? value("server-host") : "127.0.0.1", portValue = ssh ? value("server-port") : value("local-server-port"), db = ssh ? ($('input[name="ssh-db"]:checked')?.value || "mysql") : "mysql";
+    const ssh = state.targetMode === "ssh", host = ssh ? value("server-host") : "127.0.0.1", portValue = ssh ? value("server-port") : value("local-server-port"), db = value(ssh ? "ssh-db" : "local-db") || "mysql";
     return { path: "C:\\Users\\87188\\AppData\\Local\\Programs\\OMS\\delivery\\deployment-checklist.txt", groups: [
       { title:"部署信息", fields:[["部署目标", ssh ? value("target-name") : "本机 Docker"],["安装目录", ssh ? "/qcdl/jar-project" : value("install-dir")],["服务端口", portValue],["数据库", db === "mysql" ? "Mysql" : "openGauss"],["完成时间", formatDate(state.completedAt)]] },
       { title:"数据服务", fields:[["关系数据库地址", ssh ? host : "远程 openGauss"],["数据库账号", ssh ? value("ssh-user") : "oms_owner"],["数据库密码", randomString(18), true],["时序数据库", `http://${host}:8086`],["时序访问令牌", randomString(28), true]] },

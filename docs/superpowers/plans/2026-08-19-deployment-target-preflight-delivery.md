@@ -2,7 +2,7 @@
 
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
-**Goal:** 将现有 720x540 安装器调整为“选择部署目标 -> 环境预检 -> 部署完成”的三步流程，并支持 C1/C2 配置、预检错误详情和四类交付清单。
+**Goal:** 将现有 720x540 安装器调整为“选择部署目标 -> 环境预检 -> 部署完成”的三步流程，并支持远程 SSH/本机部署配置、预检错误详情和四类交付清单。
 
 **Architecture:** 保留原生 HTML/CSS/JavaScript 和单页状态模型。Step 1 负责目标配置和连接入口，Step 2 负责四项环境检查和错误状态，Step 3 负责本地交付清单路径、敏感信息和完成锁定；不引入真实 SSH、Docker 或数据库连接。
 
@@ -68,9 +68,9 @@
 
 右侧保留固定三行布局，Step 1 标题为“选择部署目标”，Step 2 标题为“环境预检”，Step 3 标题为“部署完成”。
 
-- [x] **Step 2: 重建 Step 1 的 C1/C2 Tab 和字段**
+- [x] **Step 2: 重建 Step 1 的远程 SSH/本机部署 Tab 和字段**
 
-使用 data-step-tab="1:ssh" 与 data-step-tab="1:local"，并保留以下可测试 ID：
+使用 data-step-tab="1:ssh" 与 data-step-tab="1:local"，界面只显示“远程 SSH”和“本机部署”，并保留以下可测试 ID：
 
     <input id="target-name" value="/qcdl/jar-project">
     <input id="server-port" value="8080">
