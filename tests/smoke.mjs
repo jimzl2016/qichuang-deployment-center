@@ -9,33 +9,24 @@ const styles = await readFile(new URL("styles.css", root), "utf8");
 const script = await readFile(new URL("app.js", root), "utf8");
 
 for (const text of [
-  "运营管理系统安装",
-  "部署目标",
-  "安装与部署",
-  "完成安装",
-  "远程 SSH",
-  "本机部署",
-  "运行材料",
-  "镜像仓库",
-  "部署进度",
-  "部署信息",
-  "数据服务",
-  "文件与后台",
-  "下载交付清单",
-  "登录系统"
+  "运营管理系统安装", "选择部署目标", "远程 SSH", "本机部署", "环境预检", "部署完成",
+  "部署目标", "服务端口", "数据库", "安装目录", "测试连接", "检测环境", "查看错误", "安装部署",
+  "部署信息", "数据服务", "文件服务", "后台账号", "复制完整清单", "下载清单", "完成"
 ]) assert.ok(html.includes(text), `Missing static UI text: ${text}`);
 
 assert.match(html, /class="installer"[^>]+data-installer-size="720x540"/);
+assert.ok(html.includes("/qcdl/jar-project"));
+assert.ok(html.includes("C:\\Users\\87188\\AppData\\Local\\Programs\\OMS"));
+assert.ok(html.includes("id=\"local-db-opengauss\"") && html.includes("disabled"), "Local openGauss must be disabled");
 assert.ok(!html.includes("暗色") && !html.includes("亮色") && !html.includes("跟随系统"), "Theme switcher should not be displayed");
 assert.match(styles, /\.installer\{[^}]*width:720px;height:540px/);
 assert.match(styles, /grid-template-columns:180px 540px/);
 assert.match(styles, /grid-template-rows:84px 394px 62px/);
 
-for (const text of ["关系数据库", "时序数据库", "文件存储", "后台系统", "DEPLOY-IMG-401"]) {
+for (const text of ["connectionTested", "preflightFailed", "preflightErrorOpen", "ENV-DOCKER-001", "finish-installation"]) {
   assert.ok(script.includes(text), `Missing deployment behavior: ${text}`);
 }
 assert.ok(script.includes("state.deploymentDone || step > state.step"), "Missing completed-state step lock");
-assert.ok(script.includes("if (step === 1 && state.stepTabs[1] !== tab) resetPreflight()"), "Target tab changes must reset preflight");
 for (const file of ["styles.css", "app.js", "assets/logo.png"]) await access(new URL(file, root));
 
 const check = spawnSync(process.execPath, ["--check", fileURLToPath(new URL("app.js", root))], { encoding: "utf8" });

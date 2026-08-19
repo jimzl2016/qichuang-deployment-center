@@ -43,7 +43,7 @@
 
 展示字段：
 
-- 安装目录：默认 `C:\Users\OMS`
+- 安装目录：默认 `C:\Users\87188\AppData\Local\Programs\OMS`
 - 服务端口：默认 `8080`
 - 数据库：默认选择 `Mysql`
 - `openGauss` 选项保留但置灰，旁边显示“暂不支持”

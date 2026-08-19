@@ -16,7 +16,7 @@
 - Modify: tests/smoke.mjs
 - Test: index.html, styles.css, app.js
 
-- [ ] **Step 1: 写入新流程的失败断言**
+- [x] **Step 1: 写入新流程的失败断言**
 
 在静态断言中加入新标题、Tab、默认值和交付字段，先让旧页面失败：
 
@@ -28,17 +28,17 @@
       "下载清单", "完成"
     ]) assert.ok(html.includes(text), "Missing static UI text: " + text);
     assert.ok(html.includes("/qcdl/jar-project"));
-    assert.ok(html.includes("C:/Users/OMS"));
+    assert.ok(html.includes("C:/Users/87188/AppData/Local/Programs/OMS"));
     assert.ok(script.includes("openGauss（暂不支持）"));
     assert.ok(script.includes("preflightFailed"));
 
-- [ ] **Step 2: 运行测试确认旧实现失败**
+- [x] **Step 2: 运行测试确认旧实现失败**
 
 运行：node tests\smoke.mjs
 
 预期：FAIL，报告缺少“选择部署目标”或“环境预检”，证明测试确实覆盖新需求。
 
-- [ ] **Step 3: 保留固定画布和完成锁定断言**
+- [x] **Step 3: 保留固定画布和完成锁定断言**
 
 继续保留以下几何与锁定断言：
 
@@ -47,7 +47,7 @@
     assert.match(styles, /grid-template-rows:84px 394px 62px/);
     assert.ok(script.includes("state.deploymentDone || step > state.step"));
 
-- [ ] **Step 4: 提交测试基线**
+- [x] **Step 4: 提交测试基线**
 
 运行：git add tests/smoke.mjs; git commit -m "test: define target preflight delivery flow"
 
@@ -58,7 +58,7 @@
 **Files:**
 - Modify: index.html
 
-- [ ] **Step 1: 替换左侧步骤名称和右侧步骤标题**
+- [x] **Step 1: 替换左侧步骤名称和右侧步骤标题**
 
 左侧导航使用：
 
@@ -68,7 +68,7 @@
 
 右侧保留固定三行布局，Step 1 标题为“选择部署目标”，Step 2 标题为“环境预检”，Step 3 标题为“部署完成”。
 
-- [ ] **Step 2: 重建 Step 1 的 C1/C2 Tab 和字段**
+- [x] **Step 2: 重建 Step 1 的 C1/C2 Tab 和字段**
 
 使用 data-step-tab="1:ssh" 与 data-step-tab="1:local"，并保留以下可测试 ID：
 
@@ -82,14 +82,14 @@
     <input id="ssh-password" type="password">
     <input id="key-path">
     <input id="key-passphrase" type="password">
-    <input id="install-dir" value="C:/Users/OMS">
+    <input id="install-dir" value="C:/Users/87188/AppData/Local/Programs/OMS">
     <input id="local-server-port" value="8080">
     <input id="local-db-mysql" type="radio" checked>
     <input id="local-db-opengauss" type="radio" disabled>
 
 C1 底部按钮使用 id="test-connection"，C2 使用 id="to-step2"；C2 的 openGauss 必须带 disabled 和“暂不支持”文本。
 
-- [ ] **Step 3: 重建 Step 2 的预检主体和错误面板**
+- [x] **Step 3: 重建 Step 2 的预检主体和错误面板**
 
 Step 2 只放四个检查项、统一错误面板和详情按钮：
 
@@ -108,11 +108,11 @@ Step 2 只放四个检查项、统一错误面板和详情按钮：
 
 底部操作使用 id="back-step1" 和 id="start-deploy"，后者在预检通过前禁用。
 
-- [ ] **Step 4: 重建 Step 3 的四类交付 Tab**
+- [x] **Step 4: 重建 Step 3 的四类交付 Tab**
 
 交付面板必须包含 id="tab-deployment"、id="tab-data"、id="tab-files"、id="tab-admin"，并在 Tab 上方显示：
 
-    <div id="checklist-path">C:/Users/OMS/delivery/deployment-checklist.txt</div>
+    <div id="checklist-path">C:/Users/87188/AppData/Local/Programs/OMS/delivery/deployment-checklist.txt</div>
 
 底部按钮使用 id="copy-all"、id="download-checklist"、id="finish-installation"。
 
@@ -121,7 +121,7 @@ Step 2 只放四个检查项、统一错误面板和详情按钮：
 **Files:**
 - Modify: app.js
 
-- [ ] **Step 1: 扩展单一状态对象**
+- [x] **Step 1: 扩展单一状态对象**
 
 将状态扩展为：
 
@@ -141,7 +141,7 @@ Step 2 只放四个检查项、统一错误面板和详情按钮：
       credentials: null
     };
 
-- [ ] **Step 2: 实现 C1/C2 切换和字段校验**
+- [x] **Step 2: 实现 C1/C2 切换和字段校验**
 
 setStepTab(1, tab) 必须同步 state.targetMode、显示对应面板，并调用：
 
@@ -158,7 +158,7 @@ setStepTab(1, tab) 必须同步 state.targetMode、显示对应面板，并调�
 
 C1 校验目标、服务器地址、SSH 端口、用户和密码/私钥；C2 校验安装目录和服务端口。C2 openGauss 不参与可选值校验。
 
-- [ ] **Step 3: 实现测试连接和预检失败状态**
+- [x] **Step 3: 实现测试连接和预检失败状态**
 
 测试连接按钮使用模拟结果：字段合法时设置 connectionTested=true 并允许进入 Step 2；字段不合法时显示连接错误摘要。预检执行按 Docker、架构、磁盘、权限逐项更新状态；失败时设置：
 
@@ -170,12 +170,12 @@ C1 校验目标、服务器地址、SSH 端口、用户和密码/私钥；C2 校
 
 view-preflight-error 只切换 preflight-error-detail.hidden，不改变画布尺寸。
 
-- [ ] **Step 4: 实现部署完成和交付清单生成**
+- [x] **Step 4: 实现部署完成和交付清单生成**
 
 部署成功后生成四组清单：
 
     state.credentials = {
-      path: "C:/Users/OMS/delivery/deployment-checklist.txt",
+      path: "C:/Users/87188/AppData/Local/Programs/OMS/delivery/deployment-checklist.txt",
       groups: [
         { title: "部署信息", fields: [] },
         { title: "数据服务", fields: [] },
@@ -188,7 +188,7 @@ view-preflight-error 只切换 preflight-error-detail.hidden，不改变画布�
 
 敏感字段沿用现有遮罩、显示/隐藏、单行复制和完整清单复制逻辑；下载前继续显示敏感信息确认弹窗。
 
-- [ ] **Step 5: 实现完成锁定**
+- [x] **Step 5: 实现完成锁定**
 
 renderStepper() 和步骤导航必须保证：
 
@@ -201,7 +201,7 @@ finish-installation 显示完成提示并维持 state.deploymentDone=true，不�
 **Files:**
 - Modify: styles.css
 
-- [ ] **Step 1: 保留固定画布和三行布局**
+- [x] **Step 1: 保留固定画布和三行布局**
 
 保留以下布局约束：
 
@@ -209,7 +209,7 @@ finish-installation 显示完成提示并维持 state.deploymentDone=true，不�
     .screen { width: 540px; height: 540px; grid-template-rows: 84px 394px 62px; }
     html, body { overflow: hidden; }
 
-- [ ] **Step 2: 为错误状态和详情状态增加紧凑样式**
+- [x] **Step 2: 为错误状态和详情状态增加紧凑样式**
 
     #preflight-error { height: 94px; border: 1px solid #e8b8b5; background: #fff4f3; }
     #preflight-error-detail { max-height: 42px; overflow: auto; }
@@ -217,7 +217,7 @@ finish-installation 显示完成提示并维持 state.deploymentDone=true，不�
 
 错误详情使用主体内部滚动，不允许页面滚动或改变 720x540 外框。
 
-- [ ] **Step 3: 为交付路径和四 Tab 增加样式**
+- [x] **Step 3: 为交付路径和四 Tab 增加样式**
 
     #checklist-path { height: 30px; padding: 8px 10px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; background: #edf5fb; border-left: 3px solid #2788c9; font: 8px var(--mono); }
     .delivery-tabs { display: flex; }
@@ -229,7 +229,7 @@ finish-installation 显示完成提示并维持 state.deploymentDone=true，不�
 - Modify: tests/smoke.mjs
 - Modify: docs/superpowers/plans/2026-08-19-deployment-target-preflight-delivery.md
 
-- [ ] **Step 1: 运行语法和静态测试**
+- [x] **Step 1: 运行语法和静态测试**
 
 运行：
 
@@ -239,7 +239,7 @@ finish-installation 显示完成提示并维持 state.deploymentDone=true，不�
 
 预期：语法检查、Smoke checks 和 diff 检查均成功。
 
-- [ ] **Step 2: 验证 720x540 几何尺寸**
+- [x] **Step 2: 验证 720x540 几何尺寸**
 
 在浏览器设置视口 720x540，读取：
 
@@ -251,15 +251,15 @@ finish-installation 显示完成提示并维持 state.deploymentDone=true，不�
 
 预期：安装器为 720x540，文档滚动尺寸不超过视口。
 
-- [ ] **Step 3: 验证 C1/C2 与失败恢复**
+- [x] **Step 3: 验证 C1/C2 与失败恢复**
 
 依次点击 C1/C2，确认字段切换、C2 openGauss 禁用、C1 测试连接错误和成功状态、Step 2 四项检查、查看错误详情展开，以及失败后可返回 Step 1。
 
-- [ ] **Step 4: 验证完成交付**
+- [x] **Step 4: 验证完成交付**
 
 完成模拟部署后确认 Step 3 四个 Tab、路径文本、敏感信息遮罩、复制、下载确认和完成锁定全部可用；检查控制台没有页面脚本错误。
 
-- [ ] **Step 5: 更新计划状态并提交实现**
+- [x] **Step 5: 更新计划状态并提交实现**
 
 执行：
 
