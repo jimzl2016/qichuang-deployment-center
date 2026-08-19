@@ -42,6 +42,7 @@
                 <div class="auth-row"><span>连接认证</span><label><input type="radio" name="auth-mode" value="password" checked> 密码</label><label><input type="radio" name="auth-mode" value="key"> 私钥文件</label></div>
                 <div class="auth-box" id="password-auth"><div class="field"><label for="ssh-password">SSH 密码</label><div class="password-input"><input id="ssh-password" type="password"><button type="button" data-toggle-password="ssh-password">显示</button></div><small class="error" data-error-for="ssh-password"></small></div></div>
                 <div class="auth-box key-box" id="key-auth" hidden><div class="form-grid"><div class="field"><label for="key-path">私钥路径</label><input id="key-path" placeholder="C:\Users\admin\.ssh\id_ed25519"><small class="error" data-error-for="key-path"></small></div><div class="field"><label for="key-passphrase">私钥口令 <em>选填</em></label><div class="password-input"><input id="key-passphrase" type="password"><button type="button" data-toggle-password="key-passphrase">显示</button></div></div></div></div>
+                <div class="connection-action"><span id="connection-action-status">需要先测试 SSH 连接</span><button class="btn secondary" id="test-connection" type="button">测试连接</button></div>
                 <div class="inline-error" id="connection-error" role="alert" hidden><span><b>连接失败</b><small id="connection-error-summary">无法连接服务器，请确认地址、端口和认证信息。</small></span><button type="button" id="view-connection-error">查看错误</button></div>
               </div>
               <div class="tab-panel target-panel" id="tab-local" role="tabpanel" hidden>
@@ -55,7 +56,7 @@
               </div>
             </form>
           </div>
-          <footer class="screen-actions"><span class="action-status" id="target-status">等待连接测试</span><button class="btn secondary" id="test-connection" type="button">测试连接</button><button class="btn secondary" id="view-connection-error-footer" type="button" hidden>查看错误</button><button class="btn primary" id="to-step2" type="button" hidden>下一步</button></footer>
+          <footer class="screen-actions"><span class="action-status" id="target-status">下一步：环境预检内容</span><button class="btn primary" id="to-step2" type="button" disabled>检测环境</button></footer>
         </section>
 
         <section class="screen" id="step-2" aria-labelledby="step2-title" hidden>

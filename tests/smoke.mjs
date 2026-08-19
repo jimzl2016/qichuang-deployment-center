@@ -19,6 +19,9 @@ assert.match(html, /class="installer"[^>]+data-installer-size="720x540"/);
 assert.ok(html.includes("/qcdl/jar-project"));
 assert.ok(html.includes("C:\\Users\\87188\\AppData\\Local\\Programs\\OMS"));
 assert.ok(html.includes("id=\"ssh-db\"") && html.includes("id=\"local-db\""), "Database controls must be selects");
+assert.ok(html.indexOf('id="test-connection"') < html.indexOf('<footer class="screen-actions">'), "SSH connection test must follow authentication inside the form");
+assert.ok(html.includes('id="to-step2" type="button" disabled>检测环境</button>'), "Remote environment detection must initially be disabled");
+assert.ok(html.includes("下一步：环境预检内容"), "Step 1 footer must preview the next step");
 assert.ok(html.includes("openGauss（暂不支持）") && html.includes("<option value=\"opengauss\" disabled>"), "Local openGauss must be disabled");
 assert.ok(!html.includes("C1 远程 SSH") && !html.includes("C2 本机部署"), "C1/C2 prefixes should not be displayed");
 assert.ok(!html.includes("暗色") && !html.includes("亮色") && !html.includes("跟随系统"), "Theme switcher should not be displayed");
@@ -27,6 +30,8 @@ assert.match(styles, /grid-template-columns:180px 540px/);
 assert.match(styles, /grid-template-rows:84px 394px 62px/);
 assert.match(styles, /#preflight-error-detail\{[^}]*overflow:auto/);
 assert.ok(script.includes("view-docker-details"), "Missing Docker detail interaction");
+assert.ok(script.includes('$("#to-step2").disabled = false') && script.includes('$("#to-step2").disabled = true'), "Missing connection-gated environment detection");
+assert.ok(script.includes('#step1-form input, #step1-form select'), "Target input and database changes must reset connection state");
 
 for (const text of ["connectionTested", "preflightFailed", "preflightErrorOpen", "ENV-DOCKER-001", "finish-installation"]) {
   assert.ok(script.includes(text), `Missing deployment behavior: ${text}`);

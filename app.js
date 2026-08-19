@@ -52,14 +52,14 @@
     if (step === 1) {
       state.targetMode = tab;
       $("#test-connection").hidden = tab !== "ssh";
-      $("#view-connection-error-footer").hidden = tab !== "ssh" || !state.connectionFailed;
-      $("#to-step2").hidden = tab !== "local";
-      if (tab === "local") setText("target-status", "本机部署配置就绪");
+      $("#to-step2").disabled = tab === "ssh" ? !state.connectionTested : false;
+      setText("target-status", "下一步：环境预检内容");
+      setText("connection-action-status", tab === "ssh" ? "需要先测试 SSH 连接" : "本机配置完成后检测环境");
     }
   }
   function resetTargetState() {
     state.connectionTested = false; state.connectionFailed = false; state.preflightDone = false; state.preflightFailed = false; state.preflightErrorOpen = false;
-    $("#connection-error").hidden = true; $("#view-connection-error-footer").hidden = true; $("#to-step2").disabled = false;
+    $("#connection-error").hidden = true; $("#to-step2").disabled = state.targetMode === "ssh"; setText("target-status", "下一步：环境预检内容"); setText("connection-action-status", state.targetMode === "ssh" ? "需要先测试 SSH 连接" : "本机配置完成后检测环境");
     resetPreflight(); renderStepper();
   }
   function renderAuthMode() { $("#password-auth").hidden = state.authMode !== "password"; $("#key-auth").hidden = state.authMode !== "key"; }
@@ -93,13 +93,13 @@
     setText("preflight-label", "等待检测环境");
     $$(".check").forEach((element) => { element.className = "check"; $("i", element).textContent = "·"; $("small", element).textContent = "等待检测"; });
   }
-  function toggleTargetDisabled(disabled) { $$("#step1-form input, #step1-form button, [data-step-tab^='1:']").forEach((element) => { element.disabled = disabled; }); }
+  function toggleTargetDisabled(disabled) { $$("#step1-form input, #step1-form select, #step1-form button, [data-step-tab^='1:']").forEach((element) => { element.disabled = disabled; }); }
   async function testConnection() {
     if (!validateTarget() || state.preflightRunning) return;
-    toggleTargetDisabled(true); $("#test-connection").disabled = true; setText("target-status", "正在测试连接"); await wait(700); toggleTargetDisabled(false); $("#test-connection").disabled = false;
+    toggleTargetDisabled(true); $("#test-connection").disabled = true; setText("connection-action-status", "正在测试 SSH 连接"); await wait(700); toggleTargetDisabled(false); $("#test-connection").disabled = false;
     const failed = /fail|offline|error/i.test(value("server-host"));
-    if (failed) { state.connectionFailed = true; state.connectionTested = false; $("#connection-error").hidden = false; $("#view-connection-error-footer").hidden = false; setText("target-status", "连接失败"); showToast("连接失败，请查看错误详情"); return; }
-    state.connectionFailed = false; state.connectionTested = true; setText("target-status", "连接测试通过"); showToast("连接测试通过，可以进行环境预检"); setStep(2);
+    if (failed) { state.connectionFailed = true; state.connectionTested = false; $("#connection-error").hidden = false; $("#to-step2").disabled = true; setText("connection-action-status", "连接失败，请修改后重试"); showToast("连接失败，请查看错误详情"); return; }
+    state.connectionFailed = false; state.connectionTested = true; $("#to-step2").disabled = false; setText("connection-action-status", "连接测试通过"); showToast("连接测试通过，可以检测环境");
   }
   function openConnectionError() { $("#connection-error").hidden = false; showToast("请检查服务器地址、端口和认证信息"); }
   async function runPreflight() {
@@ -144,10 +144,10 @@
 
   $$('[data-step-tab]').forEach((button) => button.addEventListener("click", () => { const [step, tab] = button.dataset.stepTab.split(":"); if (Number(step) === 1 && state.stepTabs[1] !== tab) resetTargetState(); setStepTab(Number(step), tab); }));
   $$('input[name="auth-mode"]').forEach((input) => input.addEventListener("change", () => { state.authMode = input.value; renderAuthMode(); resetTargetState(); }));
-  $$("#step1-form input").forEach((input) => input.addEventListener("input", () => { if (state.connectionTested || state.connectionFailed) resetTargetState(); }));
+  $$("#step1-form input, #step1-form select").forEach((control) => control.addEventListener("input", () => { if (state.connectionTested || state.connectionFailed) resetTargetState(); }));
   $$('[data-toggle-password]').forEach((button) => button.addEventListener("click", () => { const input = $("#" + button.dataset.togglePassword), reveal = input.type === "password"; input.type = reveal ? "text" : "password"; button.textContent = reveal ? "隐藏" : "显示"; }));
   $$('[data-step-nav]').forEach((button) => button.addEventListener("click", () => { if (!button.disabled) setStep(Number(button.dataset.stepNav)); }));
-  $("#test-connection").addEventListener("click", testConnection); $("#to-step2").addEventListener("click", () => { if (validateTarget()) { state.connectionTested = true; setStep(2); } }); $("#view-connection-error").addEventListener("click", openConnectionError); $("#view-connection-error-footer").addEventListener("click", openConnectionError);
+  $("#test-connection").addEventListener("click", testConnection); $("#to-step2").addEventListener("click", () => { if (state.targetMode === "local" ? validateTarget() : state.connectionTested) { state.connectionTested = true; setStep(2); } }); $("#view-connection-error").addEventListener("click", openConnectionError);
   $("#back-step1").addEventListener("click", () => setStep(1)); $("#run-preflight").addEventListener("click", runPreflight); $("#view-preflight-error").addEventListener("click", togglePreflightError); $("#start-deploy").addEventListener("click", startDeployment);
   $("#view-docker-details").addEventListener("click", () => $("#docker-details-dialog").showModal()); $("#close-docker-details").addEventListener("click", () => $("#docker-details-dialog").close());
   $$("#tab-deployment, #tab-data, #tab-files, #tab-admin").forEach((panel) => panel.addEventListener("click", (event) => { const reveal = event.target.closest("[data-reveal]"), copy = event.target.closest("[data-copy]"); if (reveal) { const field = findCredential(reveal.dataset.reveal), code = reveal.closest(".credential-row").querySelector("code"), showing = reveal.textContent === "隐藏"; code.textContent = showing ? "••••••••••••••••" : field[1]; reveal.textContent = showing ? "显示" : "隐藏"; } if (copy) copyText(findCredential(copy.dataset.copy)[1], "已复制到剪贴板"); }));
