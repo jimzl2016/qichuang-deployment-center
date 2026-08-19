@@ -46,7 +46,7 @@
                 <div class="inline-error" id="connection-error" role="alert" hidden><span><b>连接失败</b><small id="connection-error-summary">无法连接服务器，请确认地址、端口和认证信息。</small></span><button type="button" id="view-connection-error">查看错误</button></div>
               </div>
               <div class="tab-panel target-panel" id="tab-local" role="tabpanel" hidden>
-                <div class="info-strip">Windows/macOS 会通过 Docker Desktop 在本机启动服务与中间件，并连接独享的远程 openGauss。</div>
+                <div class="info-strip">Windows/macOS 会通过 Docker Desktop 在本机启动服务与中间件，openGauss 当前操作系统不支持。</div>
                 <div class="form-grid local-grid">
                   <div class="field field-span"><label for="install-dir">安装目录</label><input id="install-dir" value="C:\Users\87188\AppData\Local\Programs\OMS"><small class="error" data-error-for="install-dir"></small></div>
                   <div class="field"><label for="local-server-port">服务端口</label><input id="local-server-port" type="number" min="1" max="65535" value="8080"><small class="error" data-error-for="local-server-port"></small></div>
@@ -56,7 +56,7 @@
               </div>
             </form>
           </div>
-          <footer class="screen-actions"><span class="action-status" id="target-status">下一步：环境预检内容</span><button class="btn primary" id="to-step2" type="button" disabled>检测环境</button></footer>
+          <footer class="screen-actions"><button class="btn primary" id="to-step2" type="button" disabled>下一步</button></footer>
         </section>
 
         <section class="screen" id="step-2" aria-labelledby="step2-title" hidden>

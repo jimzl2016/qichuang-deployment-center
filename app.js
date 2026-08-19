@@ -53,13 +53,12 @@
       state.targetMode = tab;
       $("#test-connection").hidden = tab !== "ssh";
       $("#to-step2").disabled = tab === "ssh" ? !state.connectionTested : false;
-      setText("target-status", "下一步：环境预检内容");
       setText("connection-action-status", tab === "ssh" ? "需要先测试 SSH 连接" : "本机配置完成后检测环境");
     }
   }
   function resetTargetState() {
     state.connectionTested = false; state.connectionFailed = false; state.preflightDone = false; state.preflightFailed = false; state.preflightErrorOpen = false;
-    $("#connection-error").hidden = true; $("#to-step2").disabled = state.targetMode === "ssh"; setText("target-status", "下一步：环境预检内容"); setText("connection-action-status", state.targetMode === "ssh" ? "需要先测试 SSH 连接" : "本机配置完成后检测环境");
+    $("#connection-error").hidden = true; $("#to-step2").disabled = state.targetMode === "ssh"; setText("connection-action-status", state.targetMode === "ssh" ? "需要先测试 SSH 连接" : "本机配置完成后检测环境");
     resetPreflight(); renderStepper();
   }
   function renderAuthMode() { $("#password-auth").hidden = state.authMode !== "password"; $("#key-auth").hidden = state.authMode !== "key"; }

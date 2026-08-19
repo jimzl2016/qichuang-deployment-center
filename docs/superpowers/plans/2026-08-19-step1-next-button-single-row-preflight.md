@@ -16,7 +16,7 @@
 - Modify: `tests/smoke.mjs`
 - Test: `tests/smoke.mjs`
 
-- [ ] **Step 1: Replace the old Step 1 footer assertion**
+- [x] **Step 1: Replace the old Step 1 footer assertion**
 
 Update the static assertions so the page must contain exactly the new primary action and local deployment copy:
 
@@ -32,7 +32,7 @@ Add a CSS assertion for the one-row preflight layout:
 assert.match(styles, /\.preflight-grid\{[^}]*grid-template-columns:repeat\(4,1fr\)/, "Preflight cards must use four columns");
 ```
 
-- [ ] **Step 2: Run the smoke test and confirm it fails before implementation**
+- [x] **Step 2: Run the smoke test and confirm it fails before implementation**
 
 Run:
 
@@ -42,7 +42,7 @@ node tests\smoke.mjs
 
 Expected: `FAIL` because the current HTML still contains `下一步：环境预检内容` and the button text is `检测环境`.
 
-- [ ] **Step 3: Commit the failing test only**
+- [x] **Step 3: Commit the failing test only**
 
 ```powershell
 git add tests\smoke.mjs
@@ -55,7 +55,7 @@ git commit -m "test: specify next button and single-row preflight"
 - Modify: `index.html:42-60`
 - Modify: `app.js:52-63`
 
-- [ ] **Step 1: Remove the Step 1 footer status element and rename the button**
+- [x] **Step 1: Remove the Step 1 footer status element and rename the button**
 
 Change the Step 1 footer to contain only the primary action:
 
@@ -65,7 +65,7 @@ Change the Step 1 footer to contain only the primary action:
 
 Do not add a replacement left-side placeholder; the footer should allow the button to remain aligned to the right through the existing `.screen-actions` rule.
 
-- [ ] **Step 2: Replace the local deployment note copy**
+- [x] **Step 2: Replace the local deployment note copy**
 
 Use this exact text in the local tab:
 
@@ -75,7 +75,7 @@ Use this exact text in the local tab:
 
 Keep the existing `local-note` block and field behavior unchanged.
 
-- [ ] **Step 3: Remove JavaScript writes to the deleted footer status**
+- [x] **Step 3: Remove JavaScript writes to the deleted footer status**
 
 In `setStepTab()` and `resetTargetState()`, remove calls that write `target-status`. Preserve the connection gating behavior by leaving the `#to-step2.disabled` assignments and `connection-action-status` updates intact:
 
@@ -92,7 +92,7 @@ $("#to-step2").disabled = state.targetMode === "ssh";
 setText("connection-action-status", state.targetMode === "ssh" ? "需要先测试 SSH 连接" : "本机配置完成后检测环境");
 ```
 
-- [ ] **Step 4: Run syntax and smoke checks after the minimal implementation**
+- [x] **Step 4: Run syntax and smoke checks after the minimal implementation**
 
 Run:
 
@@ -103,7 +103,7 @@ node tests\smoke.mjs
 
 Expected: both commands exit with status `0` and the smoke test prints `Smoke checks passed.`
 
-- [ ] **Step 5: Commit the Step 1 copy and DOM changes**
+- [x] **Step 5: Commit the Step 1 copy and DOM changes**
 
 ```powershell
 git add index.html app.js tests\smoke.mjs
@@ -116,7 +116,7 @@ git commit -m "fix: simplify step one next action"
 - Modify: `styles.css:8`
 - Modify: `tests/smoke.mjs`
 
-- [ ] **Step 1: Change the preflight grid to four equal columns**
+- [x] **Step 1: Change the preflight grid to four equal columns**
 
 Update the existing `.preflight-grid` rule from two columns to one row of four cards:
 
@@ -126,7 +126,7 @@ Update the existing `.preflight-grid` rule from two columns to one row of four c
 
 Keep `.check` height, status classes (`is-running`, `is-pass`, `is-fail`), and the existing detail dialog unchanged. The cards must remain inside the fixed `.tab-panel` height.
 
-- [ ] **Step 2: Run static checks**
+- [x] **Step 2: Run static checks**
 
 Run:
 
@@ -137,7 +137,7 @@ git diff --check
 
 Expected: both commands pass with no whitespace errors.
 
-- [ ] **Step 3: Commit the one-row layout**
+- [x] **Step 3: Commit the one-row layout**
 
 ```powershell
 git add styles.css tests\smoke.mjs
@@ -149,7 +149,7 @@ git commit -m "fix: show preflight checks in one row"
 **Files:**
 - Test: `index.html`, `app.js`, `styles.css` through the local preview at `http://127.0.0.1:4180/`
 
-- [ ] **Step 1: Verify initial remote SSH state**
+- [x] **Step 1: Verify initial remote SSH state**
 
 At a 720x540 viewport, confirm:
 
@@ -158,17 +158,17 @@ At a 720x540 viewport, confirm:
 - `测试连接` remains directly below the SSH authentication area.
 - The document has no horizontal or vertical overflow beyond the fixed installer canvas.
 
-- [ ] **Step 2: Verify remote failure and success gating**
+- [x] **Step 2: Verify remote failure and success gating**
 
 Fill the remote fields with valid values and set the server address to `offline`; click `测试连接` and wait for the simulated result. Confirm the error summary is visible, `下一步` remains disabled, and the page stays on Step 1.
 
 Change the server address to `192.168.10.21`; click `测试连接` again. Confirm `下一步` becomes orange with white text, the page remains on Step 1, and clicking `下一步` enters Step 2.
 
-- [ ] **Step 3: Verify local deployment path**
+- [x] **Step 3: Verify local deployment path**
 
 Reload, select `本机部署`, confirm the exact updated openGauss support copy is visible, and confirm `下一步` is enabled. Click it and confirm Step 2 is visible.
 
-- [ ] **Step 4: Verify one-row preflight geometry**
+- [x] **Step 4: Verify one-row preflight geometry**
 
 On Step 2, inspect `.preflight-grid` and confirm the four `.check` cards have the same top coordinate and appear in four columns. Capture a screenshot at 720x540 and verify all four labels are readable and the footer remains visible.
 
@@ -177,7 +177,7 @@ On Step 2, inspect `.preflight-grid` and confirm the four `.check` cards have th
 **Files:**
 - Modify: `docs/superpowers/plans/2026-08-19-step1-next-button-single-row-preflight.md`
 
-- [ ] **Step 1: Run the complete local validation set**
+- [x] **Step 1: Run the complete local validation set**
 
 Run:
 
@@ -190,7 +190,7 @@ git status --short
 
 Expected: syntax and smoke checks pass, diff check is clean, and only the intended implementation files are changed.
 
-- [ ] **Step 2: Mark completed plan steps and commit the final handoff**
+- [x] **Step 2: Mark completed plan steps and commit the final handoff**
 
 Update this plan's checkboxes with the actual results, then commit any remaining plan bookkeeping together with the implementation if needed:
 
