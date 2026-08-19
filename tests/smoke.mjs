@@ -13,6 +13,7 @@ for (const text of [
   "部署目标", "服务端口", "数据库", "安装目录", "测试连接", "检测环境", "查看错误", "安装部署",
   "部署信息", "数据服务", "文件服务", "后台账号", "复制完整清单", "下载清单", "完成"
 ]) assert.ok(html.includes(text), `Missing static UI text: ${text}`);
+for (const text of ["Docker 守护进程在运行", "宿主 arm64 / Docker arm64", "25.5.0", "v0.29.1-desktop.1", "harbor.stag.qcdl.com.cn", "15 GB", "16.05GB", "8080 Nginx 统一入口", "所需端口无外部进程冲突"]) assert.ok(html.includes(text), `Missing Docker detail: ${text}`);
 
 assert.match(html, /class="installer"[^>]+data-installer-size="720x540"/);
 assert.ok(html.includes("/qcdl/jar-project"));
@@ -25,6 +26,7 @@ assert.match(styles, /\.installer\{[^}]*width:720px;height:540px/);
 assert.match(styles, /grid-template-columns:180px 540px/);
 assert.match(styles, /grid-template-rows:84px 394px 62px/);
 assert.match(styles, /#preflight-error-detail\{[^}]*overflow:auto/);
+assert.ok(script.includes("view-docker-details"), "Missing Docker detail interaction");
 
 for (const text of ["connectionTested", "preflightFailed", "preflightErrorOpen", "ENV-DOCKER-001", "finish-installation"]) {
   assert.ok(script.includes(text), `Missing deployment behavior: ${text}`);

@@ -61,9 +61,9 @@
         <section class="screen" id="step-2" aria-labelledby="step2-title" hidden>
           <header class="screen-head"><span>STEP 2 / 3</span><h1 id="step2-title">环境预检</h1><p>完成连接后检查 Docker、架构、磁盘和部署权限</p></header>
           <div class="screen-body preflight-body">
-            <div class="preflight-intro"><b id="preflight-target-label">目标环境</b><span>请确认以下检查项全部通过后开始安装部署</span></div>
+            <div class="preflight-intro"><b id="preflight-target-label">目标环境</b><span>请确认以下检查项全部通过后开始安装部署</span><button class="detail-btn" id="view-docker-details" type="button">查看详情</button></div>
             <div class="preflight-grid" id="preflight-checks" aria-label="环境预检结果">
-              <div class="check" data-check="docker"><i>·</i><span><b>Docker</b><small>等待检测</small></span></div>
+              <div class="check" data-check="docker"><i>·</i><span><b>Docker 可用性</b><small>等待检测</small></span></div>
               <div class="check" data-check="arch"><i>·</i><span><b>架构</b><small>等待检测</small></span></div>
               <div class="check" data-check="disk"><i>·</i><span><b>磁盘</b><small>等待检测</small></span></div>
               <div class="check" data-check="permission"><i>·</i><span><b>权限</b><small>等待检测</small></span></div>
@@ -96,6 +96,7 @@
   </div>
 
   <div class="toast" id="toast" role="status" aria-live="polite"></div>
+  <dialog id="docker-details-dialog" class="details-dialog"><div class="dialog-mark">i</div><h2>Docker 与端口检查详情</h2><div class="detail-list"><div><b>Docker 可用性</b><span>Docker 守护进程在运行</span></div><div><b>架构</b><span>宿主 arm64 / Docker arm64</span></div><div><b>kernel</b><span>25.5.0</span></div><div><b>buildx</b><span>v0.29.1-desktop.1</span></div><div><b>镜像加速</b><span>项目镜像不依赖 Docker Hub，跳过镜像加速连通性检查</span></div><div><b>镜像仓库</b><span>可达：harbor.stag.qcdl.com.cn</span></div><div><b>Docker 可用内存</b><span>15 GB</span></div><div><b>镜像空间</b><span>已占用 16.05GB；全套镜像约需 8–10 GB 磁盘</span></div><div><b>8080 Nginx 统一入口</b><span>已被本项目容器占用（正常）</span></div><div><b>端口冲突</b><span>所需端口无外部进程冲突</span></div></div><div class="dialog-actions"><button class="btn primary" id="close-docker-details" type="button">知道了</button></div></dialog>
   <dialog id="download-dialog"><div class="dialog-mark">!</div><h2>下载敏感交付信息？</h2><p>文件包含明文密码、令牌和密钥，请保存在受控位置。</p><div><button class="btn secondary" id="cancel-download" type="button">取消</button><button class="btn primary" id="confirm-download" type="button">确认下载</button></div></dialog>
   <script src="app.js"></script>
 </body>

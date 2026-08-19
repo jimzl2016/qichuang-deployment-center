@@ -10,7 +10,7 @@
     deploymentFailed: false, completedAt: null, credentials: null
   };
   const preflightData = {
-    docker: "Docker 26.1 正常", arch: "linux / amd64", disk: "可用 186 GB", permission: "部署权限正常"
+    docker: "守护进程运行", arch: "arm64 / arm64", disk: "可用内存 15 GB", permission: "端口与权限正常"
   };
   const preflightErrorCode = "ENV-DOCKER-001";
   const deployTasks = ["准备运行材料", "创建服务网络", "启动数据服务", "启动文件服务", "启动后台系统", "健康检查"];
@@ -149,6 +149,7 @@
   $$('[data-step-nav]').forEach((button) => button.addEventListener("click", () => { if (!button.disabled) setStep(Number(button.dataset.stepNav)); }));
   $("#test-connection").addEventListener("click", testConnection); $("#to-step2").addEventListener("click", () => { if (validateTarget()) { state.connectionTested = true; setStep(2); } }); $("#view-connection-error").addEventListener("click", openConnectionError); $("#view-connection-error-footer").addEventListener("click", openConnectionError);
   $("#back-step1").addEventListener("click", () => setStep(1)); $("#run-preflight").addEventListener("click", runPreflight); $("#view-preflight-error").addEventListener("click", togglePreflightError); $("#start-deploy").addEventListener("click", startDeployment);
+  $("#view-docker-details").addEventListener("click", () => $("#docker-details-dialog").showModal()); $("#close-docker-details").addEventListener("click", () => $("#docker-details-dialog").close());
   $$("#tab-deployment, #tab-data, #tab-files, #tab-admin").forEach((panel) => panel.addEventListener("click", (event) => { const reveal = event.target.closest("[data-reveal]"), copy = event.target.closest("[data-copy]"); if (reveal) { const field = findCredential(reveal.dataset.reveal), code = reveal.closest(".credential-row").querySelector("code"), showing = reveal.textContent === "隐藏"; code.textContent = showing ? "••••••••••••••••" : field[1]; reveal.textContent = showing ? "显示" : "隐藏"; } if (copy) copyText(findCredential(copy.dataset.copy)[1], "已复制到剪贴板"); }));
   $("#copy-all").addEventListener("click", () => copyText(checklistText(), "完整交付清单已复制")); $("#download-checklist").addEventListener("click", () => $("#download-dialog").showModal()); $("#cancel-download").addEventListener("click", () => $("#download-dialog").close()); $("#confirm-download").addEventListener("click", () => { $("#download-dialog").close(); downloadChecklist(); }); $("#finish-installation").addEventListener("click", () => showToast("安装已完成，可以关闭安装器"));
   updateScale(); window.addEventListener("resize", updateScale); renderAuthMode(); renderStepper(); setStepTab(1, "ssh"); setStepTab(3, "deployment");
