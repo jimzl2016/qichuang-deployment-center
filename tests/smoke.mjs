@@ -24,6 +24,7 @@ assert.ok(!html.includes("暗色") && !html.includes("亮色") && !html.includes
 assert.match(styles, /\.installer\{[^}]*width:720px;height:540px/);
 assert.match(styles, /grid-template-columns:180px 540px/);
 assert.match(styles, /grid-template-rows:84px 394px 62px/);
+assert.match(styles, /#preflight-error-detail\{[^}]*overflow:auto/);
 
 for (const text of ["connectionTested", "preflightFailed", "preflightErrorOpen", "ENV-DOCKER-001", "finish-installation"]) {
   assert.ok(script.includes(text), `Missing deployment behavior: ${text}`);
