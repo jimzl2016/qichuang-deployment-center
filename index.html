@@ -4,14 +4,14 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="color-scheme" content="light">
-  <title>运营管理系统安装</title>
+  <title>运营管理系统部署</title>
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
   <div class="stage">
     <div class="installer" data-installer-size="720x540">
       <aside class="sidebar">
-        <div class="brand"><span class="brand-mark"><img src="assets/logo.png" alt="启创动力"></span><span><strong>启创动力</strong><small>运营管理系统</small></span></div>
+        <div class="brand"><span class="brand-mark"><img src="assets/logo.png" alt="部署中心"></span><span><strong>部署中心</strong><small>运营管理系统部署</small></span></div>
         <nav class="steps" aria-label="安装步骤">
           <span class="step-rail" aria-hidden="true"></span>
           <button class="step is-active" type="button" data-step-nav="1" aria-current="step"><b>1</b><span>选择部署目标</span></button>
@@ -52,7 +52,6 @@
                   <div class="field"><label for="local-server-port">服务端口</label><input id="local-server-port" type="number" min="1" max="65535" value="8080"><small class="error" data-error-for="local-server-port"></small></div>
                   <div class="field"><label for="local-db">数据库</label><select id="local-db"><option value="mysql" selected>Mysql</option><option value="opengauss" disabled>openGauss（暂不支持）</option></select></div>
                 </div>
-                <div class="local-note"><b>本机 Docker 部署</b><span>运行根由安装器管理，服务启动后可在 Step 3 查看交付路径。</span></div>
               </div>
             </form>
           </div>
@@ -78,7 +77,7 @@
         <section class="screen" id="step-3" aria-labelledby="step3-title" hidden>
           <header class="screen-head complete-head"><span>STEP 3 / 3　·　部署完成</span><h1 id="step3-title">部署完成</h1><p id="complete-time">服务已启动并通过健康检查</p></header>
           <div class="screen-body delivery-body">
-            <div class="checklist-path" id="checklist-path">C:\Users\87188\AppData\Local\Programs\OMS\delivery\deployment-checklist.txt</div>
+            <div class="checklist-path"><b>交付清单文件路径</b><code id="checklist-path">C:\Users\87188\AppData\Local\Programs\OMS\delivery\deployment-checklist.txt</code></div>
             <div class="tabs delivery-tabs" role="tablist" aria-label="部署交付清单">
               <button role="tab" aria-selected="true" aria-controls="tab-deployment" data-step-tab="3:deployment">部署信息</button>
               <button role="tab" aria-selected="false" aria-controls="tab-data" data-step-tab="3:data">数据服务</button>

@@ -16,7 +16,7 @@
 - Modify: `tests/smoke.mjs`
 - Test: `tests/smoke.mjs`
 
-- [ ] **Step 1: Add exact copy assertions**
+- [x] **Step 1: Add exact copy assertions**
 
 Add these checks after the existing static UI assertions:
 
@@ -27,7 +27,7 @@ assert.ok(html.includes('<small>运营管理系统部署</small>'), "Sidebar sub
 assert.ok(script.includes("部署中心 - 运营管理系统部署交付清单"), "Generated checklist title must use the deployment-center wording");
 ```
 
-- [ ] **Step 2: Add structure and style assertions**
+- [x] **Step 2: Add structure and style assertions**
 
 Add assertions that both Tab groups retain their semantics and the stylesheet defines the approved visual rules:
 
@@ -39,7 +39,7 @@ assert.match(styles, /\.tabs button\[aria-selected="true"\]::after\{[^}]*backgro
 assert.match(styles, /\.tabs button\[aria-selected="true"\]\{[^}]*background:transparent/);
 ```
 
-- [ ] **Step 3: Run the smoke test before implementation**
+- [x] **Step 3: Run the smoke test before implementation**
 
 Run:
 
@@ -55,7 +55,7 @@ Expected: `FAIL` because the current copy and CSS still use the old brand and fi
 - Modify: `index.html:7,14`
 - Modify: `app.js:135`
 
-- [ ] **Step 1: Update document and sidebar brand text**
+- [x] **Step 1: Update document and sidebar brand text**
 
 Change the page metadata and brand block to:
 
@@ -64,7 +64,7 @@ Change the page metadata and brand block to:
 <div class="brand"><span class="brand-mark"><img src="assets/logo.png" alt="部署中心"></span><span><strong>部署中心</strong><small>运营管理系统部署</small></span></div>
 ```
 
-- [ ] **Step 2: Update the generated checklist heading**
+- [x] **Step 2: Update the generated checklist heading**
 
 In `checklistText()`, replace the first line with:
 
@@ -74,7 +74,7 @@ const lines = ["部署中心 - 运营管理系统部署交付清单", `文件路
 
 Keep all credential fields, masking, copy, and download behavior unchanged.
 
-- [ ] **Step 3: Run syntax and smoke tests**
+- [x] **Step 3: Run syntax and smoke tests**
 
 Run:
 
@@ -90,7 +90,7 @@ Expected: syntax check succeeds and smoke tests still fail only on the pending C
 **Files:**
 - Modify: `styles.css:4,6`
 
-- [ ] **Step 1: Change the Logo container**
+- [x] **Step 1: Change the Logo container**
 
 Update the Logo rules so the white background is square with 8px corners and the existing pseudo-element dot is hidden:
 
@@ -101,7 +101,7 @@ Update the Logo rules so the white background is square with 8px corners and the
 
 Keep the existing image size and orange/blue asset.
 
-- [ ] **Step 2: Replace both Tab groups with matchstick styling**
+- [x] **Step 2: Replace both Tab groups with matchstick styling**
 
 Use transparent buttons with a short orange underline for the selected state:
 
@@ -114,7 +114,7 @@ Use transparent buttons with a short orange underline for the selected state:
 
 Remove the old first/last button corner-radius rules because the new style has no filled tab body. Keep the shared border line on `.tabs` so both Tab groups retain a stable alignment edge.
 
-- [ ] **Step 3: Run static checks**
+- [x] **Step 3: Run static checks**
 
 Run:
 
@@ -131,15 +131,15 @@ Expected: all checks pass and smoke tests print `Smoke checks passed.`
 **Files:**
 - Test: `index.html`, `styles.css`, `app.js` through `http://127.0.0.1:4180/`
 
-- [ ] **Step 1: Verify branding and Step 1 Tabs**
+- [x] **Step 1: Verify branding and Step 1 Tabs**
 
 At a 720x540 viewport, confirm the sidebar displays `部署中心` and `运营管理系统部署`, the Logo has a square white background with 8px corners and no dot, and the selected `远程 SSH`/`本机部署` Tab has only an orange underline.
 
-- [ ] **Step 2: Verify Step 3 Tabs**
+- [x] **Step 2: Verify Step 3 Tabs**
 
 Complete the local demo flow to Step 3 and confirm all four delivery Tabs use the same transparent/underline treatment. Click at least one non-default delivery Tab and confirm `aria-selected` and the visible panel still update.
 
-- [ ] **Step 3: Verify generated checklist title and fixed canvas**
+- [x] **Step 3: Verify generated checklist title and fixed canvas**
 
 Trigger copy or download after Step 3 is rendered, inspect the generated text source, and confirm its first line is `部署中心 - 运营管理系统部署交付清单`. Confirm the installer remains 720x540 with no document overflow and no console errors.
 

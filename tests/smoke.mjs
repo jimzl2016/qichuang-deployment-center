@@ -9,7 +9,7 @@ const styles = await readFile(new URL("styles.css", root), "utf8");
 const script = await readFile(new URL("app.js", root), "utf8");
 
 for (const text of [
-  "运营管理系统安装", "选择部署目标", "远程 SSH", "本机部署", "环境预检", "部署完成",
+  "运营管理系统部署", "选择部署目标", "远程 SSH", "本机部署", "环境预检", "部署完成",
   "部署目标", "服务端口", "数据库", "安装目录", "测试连接", "检测环境", "查看错误", "安装部署",
   "部署信息", "数据服务", "文件服务", "后台账号", "复制完整清单", "下载清单", "完成"
 ]) assert.ok(html.includes(text), `Missing static UI text: ${text}`);
@@ -23,6 +23,16 @@ assert.ok(html.indexOf('id="test-connection"') < html.indexOf('<footer class="sc
 assert.ok(html.includes('id="to-step2" type="button" disabled>下一步</button>'), "Step 1 primary action must be 下一步");
 assert.ok(!html.includes("下一步：环境预检内容"), "Step 1 footer status copy must be removed");
 assert.ok(html.includes("Windows/macOS 会通过 Docker Desktop 在本机启动服务与中间件，openGauss 当前操作系统不支持。"), "Local deployment copy must explain openGauss support");
+assert.ok(html.includes('<b>交付清单文件路径</b>'), "Checklist path must have a visible title");
+assert.ok(html.includes('id="checklist-path"'), "Dynamic checklist path target must remain available");
+assert.ok(!html.includes('<div class="local-note">'), "Local Docker hint block must be removed");
+assert.ok(html.includes('<title>运营管理系统部署</title>'), "Page title must use deployment wording");
+assert.ok(html.includes('<strong>部署中心</strong>'), "Sidebar brand must be 部署中心");
+assert.ok(html.includes('<small>运营管理系统部署</small>'), "Sidebar subtitle must be 运营管理系统部署");
+assert.ok(!html.includes("启创动力"), "Old brand copy must be removed from the page");
+assert.ok(script.includes("部署中心 - 运营管理系统部署交付清单"), "Generated checklist title must use the deployment-center wording");
+assert.ok(script.includes("部署中心-运营管理系统部署交付清单"), "Downloaded checklist filename must use the deployment-center wording");
+assert.equal((html.match(/role="tablist"/g) || []).length, 2, "Both Tab groups must remain present");
 assert.ok(html.includes("openGauss（暂不支持）") && html.includes("<option value=\"opengauss\" disabled>"), "Local openGauss must be disabled");
 assert.ok(!html.includes("C1 远程 SSH") && !html.includes("C2 本机部署"), "C1/C2 prefixes should not be displayed");
 assert.ok(!html.includes("暗色") && !html.includes("亮色") && !html.includes("跟随系统"), "Theme switcher should not be displayed");
@@ -31,6 +41,10 @@ assert.match(styles, /grid-template-columns:180px 540px/);
 assert.match(styles, /grid-template-rows:84px 394px 62px/);
 assert.match(styles, /#preflight-error-detail\{[^}]*overflow:auto/);
 assert.match(styles, /\.preflight-grid\{[^}]*grid-template-columns:repeat\(4,1fr\)/, "Preflight cards must use four columns");
+assert.match(styles, /\.brand-mark\{[^}]*border-radius:8px/);
+assert.match(styles, /\.brand-mark::after\{[^}]*display:none/);
+assert.match(styles, /\.tabs button\[aria-selected="true"\]::after\{[^}]*background:var\(--orange\)/);
+assert.match(styles, /\.tabs button\[aria-selected="true"\]\{[^}]*background:transparent/);
 assert.ok(script.includes("view-docker-details"), "Missing Docker detail interaction");
 assert.ok(script.includes('$("#to-step2").disabled = false') && script.includes('$("#to-step2").disabled = true'), "Missing connection-gated environment detection");
 assert.ok(script.includes('#step1-form input, #step1-form select'), "Target input and database changes must reset connection state");
