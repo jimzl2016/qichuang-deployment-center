@@ -148,14 +148,14 @@ Trigger copy or download after Step 3 is rendered, inspect the generated text so
 **Files:**
 - Modify: `docs/superpowers/plans/2026-08-19-global-brand-tab-publish.md`
 
-- [ ] **Step 1: Mark completed implementation steps and commit**
+- [x] **Step 1: Mark completed implementation steps and commit**
 
 ```powershell
 git add index.html app.js styles.css tests\smoke.mjs docs\superpowers\plans\2026-08-19-global-brand-tab-publish.md
 git commit -m "feat: apply deployment center brand styling"
 ```
 
-- [ ] **Step 2: Merge the feature branch into master**
+- [x] **Step 2: Merge the feature branch into master**
 
 Record the feature branch before switching branches, update `master` without rewriting history, then merge:
 
@@ -168,7 +168,7 @@ git merge --no-ff $featureBranch -m "merge: publish deployment center brand styl
 
 Expected: merge succeeds without conflicts and the worktree is clean.
 
-- [ ] **Step 3: Push master to GitHub**
+- [x] **Step 3: Push master to GitHub**
 
 ```powershell
 git push origin master
@@ -176,6 +176,6 @@ git push origin master
 
 Expected: `origin/master` advances successfully.
 
-- [ ] **Step 4: Verify GitHub Pages**
+- [x] **Step 4: Verify GitHub Pages**
 
 Open `https://jimzl2016.github.io/qichuang-deployment-center/` and verify the public page contains `部署中心`, `运营管理系统部署`, and the underline Tab CSS, while the old `启创动力` and `运营管理系统安装` labels are absent. Report push success separately from Pages propagation status.
