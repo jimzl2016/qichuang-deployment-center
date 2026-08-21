@@ -16,7 +16,7 @@
 - Modify: `tests/smoke.mjs`
 - Test: `tests/smoke.mjs`
 
-- [ ] **Step 1: Add static UI assertions**
+- [x] **Step 1: Add static UI assertions**
 
 Add these assertions after the existing preflight assertions:
 
@@ -26,7 +26,7 @@ assert.ok(html.includes('class="error-actions"'), "Repair and error actions must
 assert.ok(html.includes("环境修复"), "Missing environment repair label");
 ```
 
-- [ ] **Step 2: Add behavior and style assertions**
+- [x] **Step 2: Add behavior and style assertions**
 
 ```js
 for (const text of ["repairing", "repairEnvironment", "正在分析环境故障", "正在启动 Docker Desktop", "正在等待 Docker 守护进程", "正在校验 Docker 权限"]) {
@@ -36,7 +36,7 @@ assert.match(styles, /\.error-actions\{[^}]*display:flex/);
 assert.match(styles, /\.repair-btn\{[^}]*background:var\(--orange\)/);
 ```
 
-- [ ] **Step 3: Run the smoke test before implementation**
+- [x] **Step 3: Run the smoke test before implementation**
 
 Run:
 
@@ -51,7 +51,7 @@ Expected: `FAIL` with `Missing environment repair action`.
 **Files:**
 - Modify: `index.html:71`
 
-- [ ] **Step 1: Replace the error header markup**
+- [x] **Step 1: Replace the error header markup**
 
 Keep the existing title, code, summary, and detail elements, but group two actions in the top-right corner:
 
@@ -69,7 +69,7 @@ Keep the existing title, code, summary, and detail elements, but group two actio
 </div>
 ```
 
-- [ ] **Step 2: Run the smoke test**
+- [x] **Step 2: Run the smoke test**
 
 Run `node tests\smoke.mjs`.
 
@@ -80,7 +80,7 @@ Expected: the UI assertions pass; behavior assertions still fail because `repair
 **Files:**
 - Modify: `app.js:3-16,88-117,150`
 
-- [ ] **Step 1: Extend state and define repair stages**
+- [x] **Step 1: Extend state and define repair stages**
 
 Add `repairing: false` to `state` and define:
 
@@ -93,7 +93,7 @@ const repairStages = [
 ];
 ```
 
-- [ ] **Step 2: Add a shared control-lock helper**
+- [x] **Step 2: Add a shared control-lock helper**
 
 ```js
 function setPreflightControlsLocked(locked) {
@@ -107,7 +107,7 @@ function setPreflightControlsLocked(locked) {
 
 Do not enable `#start-deploy` in this helper; installation remains controlled exclusively by `preflightDone`.
 
-- [ ] **Step 3: Add `repairEnvironment()`**
+- [x] **Step 3: Add `repairEnvironment()`**
 
 ```js
 async function repairEnvironment() {
@@ -138,7 +138,7 @@ async function repairEnvironment() {
 
 The failure-demo switch remains checked. Therefore `runPreflight()` automatically fails again and restores `ENV-DOCKER-001`.
 
-- [ ] **Step 4: Integrate control locking with detection completion**
+- [x] **Step 4: Integrate control locking with detection completion**
 
 At the start of `runPreflight()`, reject repair overlap and use the helper:
 
@@ -163,7 +163,7 @@ $("#repair-environment").textContent = "环境修复";
 setText("preflight-error-summary", "Docker Desktop 未运行，请启动 Docker 后重试。");
 ```
 
-- [ ] **Step 5: Bind the new action**
+- [x] **Step 5: Bind the new action**
 
 Add:
 
@@ -171,7 +171,7 @@ Add:
 $("#repair-environment").addEventListener("click", repairEnvironment);
 ```
 
-- [ ] **Step 6: Run syntax and smoke checks**
+- [x] **Step 6: Run syntax and smoke checks**
 
 ```powershell
 node --check app.js
@@ -185,7 +185,7 @@ Expected: both pass and the smoke test prints `Smoke checks passed.`
 **Files:**
 - Modify: `styles.css:11`
 
-- [ ] **Step 1: Add the header action layout and repair button**
+- [x] **Step 1: Add the header action layout and repair button**
 
 ```css
 .error-actions{display:flex;align-items:center;gap:6px}
@@ -195,13 +195,13 @@ Expected: both pass and the smoke test prints `Smoke checks passed.`
 
 Keep `.preflight-error` at its current `102px` height and keep the error detail scrollable.
 
-- [ ] **Step 2: Add disabled feedback for the text action**
+- [x] **Step 2: Add disabled feedback for the text action**
 
 ```css
 .tiny-btn:disabled{color:#9eacb5;cursor:not-allowed}
 ```
 
-- [ ] **Step 3: Run static validation**
+- [x] **Step 3: Run static validation**
 
 ```powershell
 node --check app.js
@@ -216,11 +216,11 @@ Expected: all checks pass.
 **Files:**
 - Test: `index.html`, `app.js`, `styles.css` through the local preview
 
-- [ ] **Step 1: Enter the failure state**
+- [x] **Step 1: Enter the failure state**
 
 Choose `本机部署`, enter Step 2, enable `显示环境报错情况`, and click `检测环境`. Confirm Docker fails with `ENV-DOCKER-001`, while `环境修复` and `查看错误` are both visible in the error header.
 
-- [ ] **Step 2: Verify the repair sequence**
+- [x] **Step 2: Verify the repair sequence**
 
 Click `环境修复` and confirm:
 
@@ -229,15 +229,15 @@ Click `环境修复` and confirm:
 - The four repair summaries appear in order.
 - Docker shows a running repair state and the error panel stays within 102px.
 
-- [ ] **Step 3: Verify automatic repeated failure**
+- [x] **Step 3: Verify automatic repeated failure**
 
 After repair completes, confirm automatic preflight runs, the failure switch remains checked, and `ENV-DOCKER-001` is displayed again. Confirm `环境修复`, `查看错误`, `上一步`, and `检测环境` are usable again while `安装部署` remains disabled.
 
-- [ ] **Step 4: Verify manual recovery**
+- [x] **Step 4: Verify manual recovery**
 
 Turn off `显示环境报错情况`, click `检测环境`, and confirm all four checks pass and `安装部署` becomes enabled.
 
-- [ ] **Step 5: Verify fixed-canvas geometry**
+- [x] **Step 5: Verify fixed-canvas geometry**
 
 Confirm the error panel bottom remains inside the Step 2 body, all footer controls remain visible, and the 720x540 installer has no internal overlap or document overflow. Capture failure and repair screenshots.
 
@@ -246,7 +246,7 @@ Confirm the error panel bottom remains inside the Step 2 body, all footer contro
 **Files:**
 - Modify: `docs/superpowers/plans/2026-08-21-environment-repair-interaction.md`
 
-- [ ] **Step 1: Mark completed steps and commit implementation**
+- [x] **Step 1: Mark completed steps and commit implementation**
 
 ```powershell
 git add index.html app.js styles.css tests\smoke.mjs docs\superpowers\plans\2026-08-21-environment-repair-interaction.md

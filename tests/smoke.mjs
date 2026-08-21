@@ -48,6 +48,17 @@ assert.match(styles, /\.tabs button\[aria-selected="true"\]\{[^}]*background:tra
 assert.ok(script.includes("view-docker-details"), "Missing Docker detail interaction");
 assert.ok(script.includes('$("#to-step2").disabled = false') && script.includes('$("#to-step2").disabled = true'), "Missing connection-gated environment detection");
 assert.ok(script.includes('#step1-form input, #step1-form select'), "Target input and database changes must reset connection state");
+assert.ok(html.includes('id="repair-environment"'), "Missing environment repair action");
+assert.ok(html.includes('class="error-actions"'), "Repair and error actions must share the error header");
+assert.ok(html.includes("环境修复"), "Missing environment repair label");
+assert.ok(script.includes("(state.preflightRunning || state.repairing) && step !== state.step"), "Step navigation must reject changes during detection or repair");
+assert.ok(script.includes("if (locked) $$('[data-step-nav]')"), "Step navigation must be disabled while preflight controls are locked");
+
+for (const text of ["repairing", "repairEnvironment", "正在分析环境故障", "正在启动 Docker Desktop", "正在等待 Docker 守护进程", "正在校验 Docker 权限"]) {
+  assert.ok(script.includes(text), `Missing repair behavior: ${text}`);
+}
+assert.match(styles, /\.error-actions\{[^}]*display:flex/);
+assert.match(styles, /\.repair-btn\{[^}]*background:var\(--orange\)/);
 
 for (const text of ["connectionTested", "preflightFailed", "preflightErrorOpen", "ENV-DOCKER-001", "finish-installation"]) {
   assert.ok(script.includes(text), `Missing deployment behavior: ${text}`);
