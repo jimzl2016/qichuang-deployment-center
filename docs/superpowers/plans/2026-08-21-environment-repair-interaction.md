@@ -253,7 +253,7 @@ git add index.html app.js styles.css tests\smoke.mjs docs\superpowers\plans\2026
 git commit -m "feat: add environment repair interaction"
 ```
 
-- [ ] **Step 2: Merge into master**
+- [x] **Step 2: Merge into master**
 
 ```powershell
 git switch master
@@ -261,12 +261,14 @@ git pull --ff-only origin master
 git merge --no-ff codex/environment-repair-interaction -m "merge: publish environment repair interaction"
 ```
 
-- [ ] **Step 3: Push master**
+- [x] **Step 3: Push master**
 
 ```powershell
 git push origin master
 ```
 
-- [ ] **Step 4: Verify public Pages content**
+- [x] **Step 4: Verify public Pages content**
 
 Open `https://jimzl2016.github.io/qichuang-deployment-center/` with a cache-busting query and confirm the live HTML contains `repair-environment` and `环境修复`. Report push success separately from Pages propagation status.
+
+Verified on 2026-08-21 at `?v=1fb380b`: HTTP 200, `ENV-DOCKER-001` rendered, `环境修复` visible, and the installer remained 720x540.
