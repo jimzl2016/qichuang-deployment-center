@@ -6,13 +6,19 @@
   const state = {
     step: 1, stepTabs: { 1: "ssh", 3: "deployment" }, targetMode: "ssh", authMode: "password",
     connectionTested: false, connectionFailed: false, preflightDone: false, preflightFailed: false,
-    preflightErrorOpen: false, preflightRunning: false, deploying: false, deploymentDone: false,
+    preflightErrorOpen: false, preflightRunning: false, repairing: false, deploying: false, deploymentDone: false,
     deploymentFailed: false, completedAt: null, credentials: null
   };
   const preflightData = {
     docker: "守护进程运行", arch: "arm64 / arm64", disk: "可用内存 15 GB", permission: "端口与权限正常"
   };
   const preflightErrorCode = "ENV-DOCKER-001";
+  const repairStages = [
+    "正在分析环境故障",
+    "正在启动 Docker Desktop",
+    "正在等待 Docker 守护进程",
+    "正在校验 Docker 权限"
+  ];
   const deployTasks = ["准备运行材料", "创建服务网络", "启动数据服务", "启动文件服务", "启动后台系统", "健康检查"];
 
   function updateScale() {
@@ -80,6 +86,7 @@
     });
   }
   function setStep(step) {
+    if ((state.preflightRunning || state.repairing) && step !== state.step) return;
     if (state.deploymentDone && step !== 3) return;
     state.step = step; $$(".screen").forEach((screen) => { const visible = screen.id === `step-${step}`; screen.hidden = !visible; screen.classList.toggle("is-visible", visible); });
     if (step === 2) { setText("preflight-target-label", state.targetMode === "ssh" ? `远程 SSH：${value("server-host")}` : "本机 Docker 部署"); resetPreflight(); }
@@ -92,6 +99,15 @@
     setText("preflight-label", "等待检测环境");
     $$(".check").forEach((element) => { element.className = "check"; $("i", element).textContent = "·"; $("small", element).textContent = "等待检测"; });
   }
+  function setPreflightControlsLocked(locked) {
+    $("#back-step1").disabled = locked;
+    $("#run-preflight").disabled = locked;
+    $("#simulate-preflight-failure").disabled = locked;
+    $("#repair-environment").disabled = locked;
+    $("#view-preflight-error").disabled = locked;
+    if (locked) $$('[data-step-nav]').forEach((button) => { button.disabled = true; });
+    else renderStepper();
+  }
   function toggleTargetDisabled(disabled) { $$("#step1-form input, #step1-form select, #step1-form button, [data-step-tab^='1:']").forEach((element) => { element.disabled = disabled; }); }
   async function testConnection() {
     if (!validateTarget() || state.preflightRunning) return;
@@ -102,17 +118,41 @@
   }
   function openConnectionError() { $("#connection-error").hidden = false; showToast("请检查服务器地址、端口和认证信息"); }
   async function runPreflight() {
-    if (state.preflightRunning || !state.connectionTested) return;
-    resetPreflight(); state.preflightRunning = true; state.preflightFailed = false; $("#run-preflight").disabled = true; $("#back-step1").disabled = true; $("#simulate-preflight-failure").disabled = true; setText("preflight-label", "正在检测环境");
+    if (state.preflightRunning || state.repairing || !state.connectionTested) return;
+    resetPreflight(); state.preflightRunning = true; state.preflightFailed = false; setPreflightControlsLocked(true); setText("preflight-label", "正在检测环境");
     const simulateFailure = $("#simulate-preflight-failure").checked;
     for (const element of $$(".check")) {
       element.classList.add("is-running"); $("i", element).textContent = "↻"; $("small", element).textContent = "检测中"; await wait(260);
       if (simulateFailure && element.dataset.check === "docker") { element.classList.remove("is-running"); element.classList.add("is-fail"); $("i", element).textContent = "!"; $("small", element).textContent = "未运行"; state.preflightFailed = true; break; }
       element.classList.remove("is-running"); element.classList.add("is-pass"); $("i", element).textContent = "✓"; $("small", element).textContent = preflightData[element.dataset.check];
     }
-    state.preflightRunning = false; $("#back-step1").disabled = false; $("#simulate-preflight-failure").disabled = false; $("#run-preflight").disabled = false;
-    if (state.preflightFailed) { state.preflightDone = false; setText("preflight-error-code", preflightErrorCode); $("#preflight-error").hidden = false; setText("preflight-label", "环境检查失败"); showToast("环境检查失败，请查看错误详情"); return; }
+    state.preflightRunning = false; setPreflightControlsLocked(false);
+    if (state.preflightFailed) { state.preflightDone = false; $("#repair-environment").textContent = "环境修复"; setText("preflight-error-code", preflightErrorCode); setText("preflight-error-summary", "Docker Desktop 未运行，请启动 Docker 后重试。"); $("#preflight-error").hidden = false; setText("preflight-label", "环境检查失败"); showToast("环境检查失败，请查看错误详情"); return; }
     state.preflightDone = true; $("#start-deploy").disabled = false; setText("preflight-label", "环境检查通过"); showToast("环境检查通过，可以安装部署");
+  }
+  async function repairEnvironment() {
+    if (!state.preflightFailed || state.preflightRunning || state.repairing) return;
+    state.repairing = true;
+    state.preflightErrorOpen = false;
+    $("#preflight-error-detail").hidden = true;
+    $("#view-preflight-error").textContent = "查看错误";
+    setPreflightControlsLocked(true);
+    $("#repair-environment").textContent = "修复中";
+
+    const docker = $('[data-check="docker"]');
+    docker.className = "check is-running";
+    $("i", docker).textContent = "↻";
+    $("small", docker).textContent = "修复中";
+
+    for (const stage of repairStages) {
+      setText("preflight-error-summary", stage);
+      setText("preflight-label", stage);
+      await wait(320);
+    }
+
+    state.repairing = false;
+    $("#repair-environment").textContent = "环境修复";
+    await runPreflight();
   }
   function togglePreflightError() { state.preflightErrorOpen = !state.preflightErrorOpen; $("#preflight-error-detail").hidden = !state.preflightErrorOpen; $("#view-preflight-error").textContent = state.preflightErrorOpen ? "收起错误" : "查看错误"; }
   function randomString(length, alphabet = "ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz23456789") { return Array.from({ length }, () => alphabet[Math.floor(Math.random() * alphabet.length)]).join(""); }
@@ -147,7 +187,7 @@
   $$('[data-toggle-password]').forEach((button) => button.addEventListener("click", () => { const input = $("#" + button.dataset.togglePassword), reveal = input.type === "password"; input.type = reveal ? "text" : "password"; button.textContent = reveal ? "隐藏" : "显示"; }));
   $$('[data-step-nav]').forEach((button) => button.addEventListener("click", () => { if (!button.disabled) setStep(Number(button.dataset.stepNav)); }));
   $("#test-connection").addEventListener("click", testConnection); $("#to-step2").addEventListener("click", () => { if (state.targetMode === "local" ? validateTarget() : state.connectionTested) { state.connectionTested = true; setStep(2); } }); $("#view-connection-error").addEventListener("click", openConnectionError);
-  $("#back-step1").addEventListener("click", () => setStep(1)); $("#run-preflight").addEventListener("click", runPreflight); $("#view-preflight-error").addEventListener("click", togglePreflightError); $("#start-deploy").addEventListener("click", startDeployment);
+  $("#back-step1").addEventListener("click", () => setStep(1)); $("#run-preflight").addEventListener("click", runPreflight); $("#repair-environment").addEventListener("click", repairEnvironment); $("#view-preflight-error").addEventListener("click", togglePreflightError); $("#start-deploy").addEventListener("click", startDeployment);
   $("#view-docker-details").addEventListener("click", () => $("#docker-details-dialog").showModal()); $("#close-docker-details").addEventListener("click", () => $("#docker-details-dialog").close());
   $$("#tab-deployment, #tab-data, #tab-files, #tab-admin").forEach((panel) => panel.addEventListener("click", (event) => { const reveal = event.target.closest("[data-reveal]"), copy = event.target.closest("[data-copy]"); if (reveal) { const field = findCredential(reveal.dataset.reveal), code = reveal.closest(".credential-row").querySelector("code"), showing = reveal.textContent === "隐藏"; code.textContent = showing ? "••••••••••••••••" : field[1]; reveal.textContent = showing ? "显示" : "隐藏"; } if (copy) copyText(findCredential(copy.dataset.copy)[1], "已复制到剪贴板"); }));
   $("#copy-all").addEventListener("click", () => copyText(checklistText(), "完整交付清单已复制")); $("#download-checklist").addEventListener("click", () => $("#download-dialog").showModal()); $("#cancel-download").addEventListener("click", () => $("#download-dialog").close()); $("#confirm-download").addEventListener("click", () => { $("#download-dialog").close(); downloadChecklist(); }); $("#finish-installation").addEventListener("click", () => showToast("安装已完成，可以关闭安装器"));
